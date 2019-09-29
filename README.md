@@ -84,3 +84,15 @@ function distanceBetweenTwoPoints(pointA, pointB) {
     return Math.sqrt(sumOfDiffs);             // return the square root of the sum
 }
 ```
+
+The test passes! We implement this new function along with the _Converse of the Pythagorean Theorem_ to classify triangles. We want to determine if a triangle is right, equilateral, isosceles, scalene, acute, or obtuse.
+
+_Classification of triangles_
+|  Triangle   |                              Description                              |
+| :---------: | :-------------------------------------------------------------------: |
+|    Right    |                        Features one 90° angle.                        |
+| Equilateral |        All sides & angles are congruent. (All angles are 60°.)        |
+|  Isosceles  |                  Two equal sides & two equal angles.                  |
+|   Scalene   |        No congruent sides. (Each side has a different length.)        |
+|    Acute    | Features three acute angles. (An acute angle measures less than 90°.) |
+|   Obtuse    |             Features one angle measuring larger than 90°.             |
