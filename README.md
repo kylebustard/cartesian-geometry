@@ -50,3 +50,37 @@ Before we can use Pythagoras' Theorem, we need to know the length of the sides.
 To find the distance between two points, we can use this formula:
 
 ![Distance between two points, using Pythagorean Theorem](assets/images/distance-between-two-points.png "Formula to find the distance _D_ between two points")
+
+For this test I will assign the return value of a function I want to test to a variable `result`. This will keep our test assertion statement short and readable.
+
+```javascript
+test('calculates the distance between two points', () => {
+    const result = distanceBetweenTwoPoints([15, 20], [35, 5]);
+
+    expect(result).toBe(null);
+});
+```
+
+Also note that I am asserting the value to equal `null`. This is a temporary assertion. Why? To prevent a _false positive_.
+
+A false positive can occur if I don't pass any value to `toEqual()`. All I need to do to make a test pass in this case is to declare and export a function named `distanceBetweenTwoPoints` and ensure I've imported it to the test suite. Here's what that function looks like now:
+
+```javascript
+function distanceBetweenTwoPoints(input) {} 
+```
+
+The function does nothing, but it can make the test pass if we assert nothing or `undefined`. So we assert a `null` value and prevent a false positive. Now are test is failing, and this is good! We can be confident that we have a legitimate test.
+
+I've decided that I don't want to get granular in testing this `distanceBetweenTwoPoints` function, so I will plug in values from a geometry text book. The distance between points in our test case is `25`, so I will swap out our `null` assertion for `25`.
+
+I update the function signature to take two parameters `pointA` and `pointB`.
+
+```javascript
+function distanceBetweenTwoPoints(pointA, pointB) {
+    const dx = pointA[0] - pointB[0];         // difference between the points' y-coordinates
+    const dy = pointA[1] - pointB[1];         // difference between the points' x-coordinates
+    const sumOfDiffs = (dx * dx) + (dy * dy); // add the squares of the difference values
+
+    return Math.sqrt(sumOfDiffs);             // return the square root of the sum
+}
+```

@@ -8,6 +8,14 @@ function makeLine(input) {
     }
 }
 
+function distanceBetweenTwoPoints(pointA, pointB) {
+    const dx = pointA[0] - pointB[0];
+    const dy = pointA[1] - pointB[1];
+    const sumOfDiffs = (dx * dx) + (dy * dy);
+
+    return Math.sqrt(sumOfDiffs);
+}
+
 function areaOfATriangle(input) {
     const [[Ax, Ay], [Bx, By], [Cx, Cy]] = input;
     const result = ((Ax * (By - Cy) + Bx * (Cy - Ay) + Cx * (Ay - By)) / 2)
@@ -25,4 +33,4 @@ function makeTriangle(input) {
     }
 }
 
-module.exports = { makeLine, makeTriangle, areaOfATriangle };
+module.exports = { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints };
