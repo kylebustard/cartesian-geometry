@@ -1,35 +1,32 @@
-function makeLine(input) {
-    if (input.length === 2) {
-        if (input[0] == input[1]) {
-            return { type: 'ONE_POINT' };
-        } else {
-            return { type: 'LINE' };
-        }
+function makeLine(A, B) {
+
+    if (A == B) {
+        return { type: 'ONE_POINT' };
+    } else {
+        return { type: 'LINE' };
     }
+
 }
 
-function distanceBetweenTwoPoints(pointA, pointB) {
-    const dx = pointA[0] - pointB[0];
-    const dy = pointA[1] - pointB[1];
+function distanceBetweenTwoPoints(A, B) {
+    const dx = A[0] - B[0];
+    const dy = A[1] - B[1];
     const sumOfDiffs = (dx * dx) + (dy * dy);
 
     return Math.sqrt(sumOfDiffs);
 }
 
-function areaOfATriangle(input) {
-    const [[Ax, Ay], [Bx, By], [Cx, Cy]] = input;
-    const result = ((Ax * (By - Cy) + Bx * (Cy - Ay) + Cx * (Ay - By)) / 2)
+function areaOfATriangle(A, B, C) {
+    const result = ((A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1])) / 2)
 
     return Math.abs(result);
 }
 
-function makeTriangle(input) {
-    if (input.length === 3) {
-        if (areaOfATriangle(input) === 0) {
-            return { type: 'LINE' };
-        } else {
-            return { type: 'TRIANGLE' };
-        }
+function makeTriangle(A, B, C) {
+    if (areaOfATriangle(A, B, C) === 0) {
+        return { type: 'LINE' };
+    } else {
+        return { type: 'TRIANGLE' };
     }
 }
 

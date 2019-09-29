@@ -23,17 +23,19 @@ Once we satisfy those cases with code, we need to update our `'makes a triangle 
 
 ```javascript
 test('makes a triangle from three points', () => {
-    const coordinates = [[0, 0], [1, 1], [2, 2]];
-    ...
+    const result = makeTriangle([0, 0], [1, 1], [2, 2]);
+    // ...
 ```
 
 becomes this
 
 ```javascript
 test('makes a triangle from three points', () => {
-    const coordinates = [[0, 0], [2, 4], [10, 5]];
-    ...
+    const result = makeTriangle([0, 0], [2, 4], [10, 5]);
+    // ...
 ```
+
+Note that for tests I will assign the return value of a function I want to test to a variable `result`. This keeps test assertion statements short and readable.
 
 We could optionally save the old data values for a _sad path_ test of that function, or another.
 
@@ -50,8 +52,6 @@ Before we can use Pythagoras' Theorem, we need to know the length of the sides.
 To find the distance between two points, we can use this formula:
 
 ![Distance between two points, using Pythagorean Theorem](assets/images/distance-between-two-points.png "Formula to find the distance _D_ between two points")
-
-For this test I will assign the return value of a function I want to test to a variable `result`. This will keep our test assertion statement short and readable.
 
 ```javascript
 test('calculates the distance between two points', () => {
@@ -87,7 +87,8 @@ function distanceBetweenTwoPoints(pointA, pointB) {
 
 The test passes! We implement this new function along with the _Converse of the Pythagorean Theorem_ to classify triangles. We want to determine if a triangle is right, equilateral, isosceles, scalene, acute, or obtuse.
 
-_Classification of triangles_
+_Classification of triangles_ 
+
 |  Triangle   |                              Description                              |
 | :---------: | :-------------------------------------------------------------------: |
 |    Right    |                        Features one 90° angle.                        |

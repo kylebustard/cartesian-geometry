@@ -1,33 +1,31 @@
 const { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints } = require('./cartesian-geometry');
 
 test('makes a line out of two points', () => {
-    const coordinates = [[0, 0], [1, 1]];
 
-    expect(makeLine(coordinates)).toEqual({ type: 'LINE' });
+    expect(makeLine([0, 0], [1, 1])).toEqual({ type: 'LINE' });
 });
 
 test('two ordered pairs that point to identical coordinates do not make a line', () => {
-    const coordinates = [[1, 1], [1, 1]];
 
-    expect(makeLine(coordinates)).not.toBe({ type: 'LINE' });
+    expect(makeLine([1, 1], [1, 1])).not.toBe({ type: 'LINE' });
 });
 
 test('makes a triangle from three points', () => {
-    const coordinates = [[0, 0], [2, 4], [10, 5]];
+    const result = makeTriangle([0, 0], [2, 4], [10, 5]);
 
-    expect(makeTriangle(coordinates)).toEqual({ type: 'TRIANGLE' });
+    expect(result).toEqual({ type: 'TRIANGLE' });
 });
 
 test('a point is collinear if it lies on the same straight line', () => {
-    const coordinates = [[0, 0], [1, 1], [2, 2]];
+    const result = makeTriangle([0, 0], [1, 1], [2, 2]);
 
-    expect(makeTriangle(coordinates)).toEqual({ type: 'LINE' });
+    expect(result).toEqual({ type: 'LINE' });
 });
 
 test('calculates the area of a triangle', () => {
-    const coordinates = [[0, 0], [2, 4], [10, 5]];
+    const result = areaOfATriangle([0, 0], [2, 4], [10, 5]);
 
-    expect(areaOfATriangle(coordinates)).toBe(15);
+    expect(result).toBe(15);
 })
 
 test('calculates the distance between two points', () => {
