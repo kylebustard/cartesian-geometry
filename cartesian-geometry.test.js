@@ -1,4 +1,4 @@
-const { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints } = require('./cartesian-geometry');
+const { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle } = require('./cartesian-geometry');
 
 test('makes a line out of two points', () => {
 
@@ -32,4 +32,14 @@ test('calculates the distance between two points', () => {
     const result = distanceBetweenTwoPoints([15, 20], [35, 5]);
 
     expect(result).toBe(25);
+});
+
+test('appends a classification property on the object returned from `makeFunction`', () => {
+    const triangle = makeTriangle([0, 0], [2, 4], [10, 5]);
+    const result = classifyTriangle(triangle);
+
+    const triangleMock = makeTriangle([0, 0], [2, 4], [10, 5]);
+    triangleMock["classification"] = null;
+
+    expect(result).toEqual(triangleMock);
 });

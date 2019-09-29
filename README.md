@@ -4,13 +4,13 @@ Exploring the Cartesian coordinate system with JavaScript and TDD.
 
 Our first test `makes a line out of two points` will drive the development of a function that does the following: 
   - receives a couple of ordered pairs as an argument 
-	- returns an object with a property `type: 'LINE'` if input is two points
+	- returns an object with a property `type: 'LINE'` 
 
 Our second test `makes a triangle from three points` drives the development of a function that does the following:
-  - receives three ordered pairs as an argument
-	- returns an object with a property `type: 'TRIANGLE'` if input contains three points
+  - receives three ordered pairs as an argument 
+	- returns an object with a property `type: 'TRIANGLE'` 
 
-Keeping the test data simple is beneficial for a few reasons. Just using coordinates like `[[0, 0], [1, 1]]` and `[[0, 0], [1, 1], [2, 2]]`. This makes the tests easy to reason about, and it helps me to imagine _edge cases_.
+Keeping the test data simple is beneficial for a few reasons. Just using coordinates like `[0, 0], [1, 1]` and `[0, 0], [1, 1], [2, 2]`. This makes the tests easy to reason about, and it helps me to imagine _edge cases_.
 
 The first edge case for the `makeTriangle` function is three points that make a line. In fact, our test data satisfies this condition. The mathematical term for this is _collinear_. 
 We will need to write a test for collinear points, and then implement a solution to make that test pass. How can we write code that detects if points are collinear? Mathematics gives us a formula to find the _area of a triangle_. If the area is equal to zero, then the points are collinear and do not form a triangle.
@@ -97,3 +97,46 @@ _Classification of triangles_
 |   Scalene   |        No congruent sides. (Each side has a different length.)        |
 |    Acute    | Features three acute angles. (An acute angle measures less than 90°.) |
 |   Obtuse    |             Features one angle measuring larger than 90°.             |
+
+Let's create a function that receives a triangle and appends a `classification` property on the object returned from `makeFunction`.
+
+To test this we need to build our actual data and our mock data to test against it.
+
+This is what our actual or _expected_ data will look like:
+
+```javascript
+    const triangle = makeTriangle([0, 0], [2, 4], [10, 5]); // Create a triangle
+    const result = classifyTriangle(triangle);              // Invoke our soon to be created `classifyTriangle` function
+```
+
+And this is what how we make our mock data:
+
+```javascript
+    const triangleMock = makeTriangle([0, 0], [2, 4], [10, 5]); // Create a triangle
+    triangleMock["classification"] = null;                      // Append a `classification` property to the triangle
+```
+
+And putting it all together in a single test looks like:
+
+```javascript
+test('appends a classification property on the object returned from `makeFunction`', () => {
+    const triangle = makeTriangle([0, 0], [2, 4], [10, 5]);
+    const result = classifyTriangle(triangle);
+
+    const triangleMock = makeTriangle([0, 0], [2, 4], [10, 5]);
+    triangleMock["classification"] = null;
+
+    expect(result).toEqual(triangleMock);
+});
+```
+
+Our function that makes this test pass (once we also export and import the function appropiately):
+
+```javascript
+function classifyTriangle(obj) {
+    obj["classification"] = null;
+    return obj;
+}
+```
+
+Note that the `classification` property is pointing to a `null` value. We want to expand on this new function so that is dynamically classifies triangles based on their characteristics.
