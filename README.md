@@ -36,3 +36,17 @@ test('makes a triangle from three points', () => {
 ```
 
 We could optionally save the old data values for a _sad path_ test of that function, or another.
+
+When we're dealing with lines and triangles, an essential tool is the _Pythagorean Theorem_:
+
+>In a right triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides.
+
+The hypotenuse is the side opposite the right angle, and it will be the longest side of the triangle.
+
+![Pythagorean Theorem](assets/images/pythagorean-theorem.gif "Pythagorean Theorem")
+
+Before we can use Pythagoras' Theorem, we need to know the length of the sides.
+
+To find the distance between two points, we can use this formula:
+
+![Distance between two points, using Pythagorean Theorem](assets/images/distance-between-two-points.png "Formula to find the distance _D_ between two points")
