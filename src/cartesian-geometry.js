@@ -1,19 +1,18 @@
-const triangleTypes = require('../constants/triangleTypes');
+const geometricTypes = require('../constants/geometricTypes');
+const wrapArgsInSingleArray = require('./utility');
 
-function makeLine(A, B) {
-    const coordinates = [];
-    for (let prop in arguments) {
-        coordinates.push(arguments[prop]);
-    }
+function makeLine(arrayOfTwoOrderedPairs) {
+    const [A, B] = arrayOfTwoOrderedPairs;
 
-    if (A == B) {
-        return { type: 'ONE_POINT', coordinates: coordinates };
+    if (A === B) {
+        return { type: geometricTypes.POINT, coordinates: arrayOfTwoOrderedPairs };
     } else {
-        return { type: 'LINE', coordinates: coordinates };
+        return { type: geometricTypes.LINE, coordinates: arrayOfTwoOrderedPairs };
     }
 }
 
-function distanceBetweenTwoPoints(A, B) {
+function distanceBetweenTwoPoints(arrayOfTwoOrderedPairs) {
+    const [A, B] = arrayOfTwoOrderedPairs;
     const dx = A[0] - B[0];
     const dy = A[1] - B[1];
     const sumOfDiffs = (dx * dx) + (dy * dy);
@@ -21,33 +20,24 @@ function distanceBetweenTwoPoints(A, B) {
     return Math.sqrt(sumOfDiffs);
 }
 
-function areaOfATriangle(A, B, C) {
+function areaOfATriangle(arrayOfThreeOrderedPairs) {
+    const [A, B, C] = arrayOfThreeOrderedPairs;
     const result = ((A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1])) / 2);
 
     return Math.abs(result);
 }
 
-function makeTriangle(A, B, C) {
-    wrapArgsInSingleArray(A, B)
-
-    if (areaOfATriangle(A, B, C) === 0) {
-        return { type: 'LINE', coordinates: coordinates };
+function makeTriangle(arrayOfThreeOrderedPairs) {
+    if (areaOfATriangle(arrayOfThreeOrderedPairs) === 0) {
+        return { type: geometricTypes.LINE, coordinates: arrayOfThreeOrderedPairs };
     } else {
-        return { type: 'TRIANGLE', coordinates: coordinates };
+        return { type: geometricTypes.TRIANGLE, coordinates: arrayOfThreeOrderedPairs };
     }
 }
 
 function classifyTriangle(obj) {
     obj["classification"] = null;
     return obj;
-}
-
-function wrapArgsInSingleArray(...args) {
-    let argsInSingleArray = [];
-    for (let i = 0; i < args.length; i++) {
-        argsInSingleArray.push(args[i]);
-    }
-    return argsInSingleArray;
 }
 
 module.exports = { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray };

@@ -278,3 +278,28 @@ FAIL test/utility.test.js
 ```
 
 This is a simple fix: we just need to update the paths. For example, at the top of `utility.test.js`, `require('./utility');` should be updated to `require('../src/utility');`. Update all the out of date paths until the test suite runs.
+
+### Updating some tests
+
+Some of our tests expect an object literal `{}` to be returned with a `type` property. We want to update that expectation so a second property `coordinates` is also included in that object literal. To get you started, we will update the `'makes a line out of two points'` test so that the line:
+
+```javascript
+    expect(makeLine([0, 0], [1, 1])).toEqual({ type: 'LINE' });
+```
+
+is updated to:
+
+```javascript
+    expect(makeLine([0, 0], [1, 1])).toEqual({ type: 'LINE', coordinates: [[0, 0], [1, 1]] });
+```
+
+All we are doing is telling the computer we expect the coordinates property to point to a single `Array` that contains the given coordinates. Update the remainder of tests appropiately.
+
+## router
+
+As mentioned in [implementing a helper function](#implementing-a-helper-function), we are going to build a pipeline that receives input, transforms it into one data structure, and routes it to an appropiate function. Let's create new files and get started.
+
+```shell
+touch src/router.js test/router.test.js
+```
+
