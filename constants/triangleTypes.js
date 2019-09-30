@@ -1,0 +1,10 @@
+const RIGHT = 'RIGHT';
+const EQUILATERAL = 'EQUILATERAL';
+const ISOSCELES = 'ISOSCELES';
+const SCALENE = 'SCALENE';
+const ACUTE = 'ACUTE';
+const OBTUSE = 'OBTUSE';
+
+module.exports = {
+    RIGHT, EQUILATERAL, ISOSCELES, SCALENE, ACUTE, OBTUSE
+};
