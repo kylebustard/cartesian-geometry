@@ -87,7 +87,7 @@ function distanceBetweenTwoPoints(pointA, pointB) {
 
 The test passes! We implement this new function along with the _Converse of the Pythagorean Theorem_ to classify triangles. We want to determine if a triangle is right, equilateral, isosceles, scalene, acute, or obtuse.
 
-_Classification of triangles_ 
+#### Classification of triangles
 
 |  Triangle   |                              Description                              |
 | :---------: | :-------------------------------------------------------------------: |
@@ -102,14 +102,14 @@ Let's create a function that receives a triangle and appends a `classification` 
 
 To test this we need to build our actual data and our mock data to test against it.
 
-This is what our actual or _expected_ data will look like:
+This is what our actual result data will look like:
 
 ```javascript
     const triangle = makeTriangle([0, 0], [2, 4], [10, 5]); // Create a triangle
     const result = classifyTriangle(triangle);              // Invoke our soon to be created `classifyTriangle` function
 ```
 
-And this is what how we make our mock data:
+And this is what how we make our mock data or our **exptected** data:
 
 ```javascript
     const triangleMock = makeTriangle([0, 0], [2, 4], [10, 5]); // Create a triangle
@@ -130,7 +130,7 @@ test('appends a classification property on the object returned from `makeFunctio
 });
 ```
 
-Our function that makes this test pass (once we also export and import the function appropiately):
+Our function that makes this test pass:
 
 ```javascript
 function classifyTriangle(obj) {
@@ -139,4 +139,102 @@ function classifyTriangle(obj) {
 }
 ```
 
-Note that the `classification` property is pointing to a `null` value. We want to expand on this new function so that is dynamically classifies triangles based on their characteristics.
+>💡Don't forget to export and import the function appropiately!
+
+Note that the `classification` property is pointing to a `null` value. We want to expand on this new function so that it dynamically classifies triangles based on their characteristics. We need tests cases to drive development of classifications of different kinds of triangles. 
+
+We will use a `describe` test block to group the classification tests together.
+
+```javascript
+describe('Triangle classification', () => {
+  // The test for `classifyTriangle` and other related tests will be placed inside here.
+  // ...
+}
+```
+
+Referring back to our [Classification of triangles](#classification-of-triangles) table, we will make constant variables assigned to each of the types of triangles.
+
+```shell
+$ mkdir constants
+$ touch constants/triangleTypes.js
+```
+
+Add this to `constants/triangleTypes.js`:
+
+```javascript
+const RIGHT = 'RIGHT';
+const EQUILATERAL = 'EQUILATERAL';
+const ISOSCELES = 'ISOSCELES';
+const SCALENE = 'SCALENE';
+const ACUTE = 'ACUTE';
+const OBTUSE = 'OBTUSE';
+
+module.exports = {
+    RIGHT, EQUILATERAL, ISOSCELES, SCALENE, ACUTE, OBTUSE
+};
+```
+
+Finally, add this line at or near the top of both your source code and test file:
+
+```javascript
+const triangleTypes = require('./constants/triangleTypes');
+// ... 
+```
+
+Now we can use the constants like this `triangleTypes.ACUTE` and with that we get some a few benefits such as: 
+- No errors from mispelling a string (e.g., `'ISOCELES'` and `'EQIULATERAL'`).
+- Utilizing features from our favorite text editor or IDE where we can start typing `triangeTypes.` then have a list of constants pop up to select from, and hit the `tab` key for autocomplete.
+- By importing constants into our source code and test file, we get consistency.
+
+Back to our `describe` test which will contain the block of tests pertaining to the classification of triangles, I've decided that I want to put a pause on writing these tests. For now we will _skip_ these tests and direct out focus elsewhere.
+
+Your test framework should have a simple mechanism for skipping tests. I am using Jest, and Jest skips tests by prefixing an `x` to a test like `xtest` or `xdescribe`. I will prefix an `x` to the first line of my tests for triangle classification like this:
+
+```javascript
+xdescribe('Triangle classification', () => {
+  // ...
+```
+
+And now any tests nested inside this test will also be skipped.
+
+## Implementing a helper function 
+
+At some point we will need to validate the number of arguments passed to our functions. A line expects two ordered pairs, and a triangle expects three ordered pairs. There are a few ways we could go about this. For example, validation could be handled by a client application or it could be handled on the server. Since this is a Node.js application (at least for the time being) we will keep the validation server-side. However, if we turn this into a full-stack web application with then we could implement validation on the client via HTML forms at the time an HTML `submit` button is clicked. If we're using a UI library like React.js, then it is relatively easy to handle validation in real-time as it is being input by a user.
+
+Remembering that we decided to handle validation server-side, we have more options still. Each function could handle validation on it's own, or we could make a pipeline that receives any and all data, wraps it into an array, and routes and passes it to the appropiate function based on the number of ordered pairs contained in the array. We will choose the former.
+
+We will test that a helper function `'wrap arguments in single array'`. This helper function is generic and doesn't do anything specific to geometry, but we can still group it in a context that will make it distinct from the rest of the code.
+
+### Tidying up
+
+Now we need to do some tidying up. Running the `ls` command shows all our of files, and you may imagine how cluttered our project directory could become if don't get a handle on it now.
+
+I'm going to create a folder for all of the source code. There is no standard convention, but popular names for JavaScript source code folders include `app`, `lib`, or `src`. I'm going with the final option.
+
+```shell
+$ mkdir src
+```
+
+Now we move all our `.js` files into our new `src` folder, **however** we don't want to include any `.test.js` files. RegEx (_regular expressions_) are a powerful for computer programming. There are awesome tools such as [regex101](https://regex101.com/), but if I'm already a bit confident in a RegEx pattern I will test it with a `read only` command like `ls` before I do any `write` or delete actions like `mv` or `rm`.
+
+```shell
+$ ls *[^test].js
+```
+
+The RegEx pattern above matches on all files ending in `.js` _excluding_ `*.test.js` files. Running `ls` confirms this by listing only the appropiate files. Now that we are confident with our RegEx pattern, we can use it to move files into the new `src/`.
+
+```shell
+$ mv *[^test].js src/
+```
+
+Finally, we need to put our test files somewhere. Let's create a `test/` folder.
+
+```shell
+$ mkdir test
+```
+
+Now we move the test files into `test/`.
+
+```shell
+$ mv *test.js test/
+```
