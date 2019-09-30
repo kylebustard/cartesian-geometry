@@ -203,7 +203,36 @@ At some point we will need to validate the number of arguments passed to our fun
 
 Remembering that we decided to handle validation server-side, we have more options still. Each function could handle validation on it's own, or we could make a pipeline that receives any and all data, wraps it into an array, and routes and passes it to the appropiate function based on the number of ordered pairs contained in the array. We will choose the former.
 
-We will test that a helper function `'wrap arguments in single array'`. This helper function is generic and doesn't do anything specific to geometry, but we can still group it in a context that will make it distinct from the rest of the code.
+We will test that a helper function `'wraps arguments in single array'`. This helper function is generic and doesn't do anything specific in regards to geometry, but we can still scope it to a context that will make it distinct from the rest of the code. That context will be called `utility`–even though we've been talking about a _helper_ function, utitilty is a word that we can also use to describe this context. Let's create both a source code file and a test file for it. 
+
+```shell
+$ touch utility.js utility.test.js
+```
+
+We want our test to check the length of the `Array` returned by the new utility function:
+
+```javascript
+test('wraps arguments in single array', () => {
+    const result = wrapArgsInSingleArray(1, 2);
+
+    expect(result.length).toBe(2);
+});
+```
+
+I can make the test pass by implementing the following code:
+
+```javascript
+function wrapArgsInSingleArray(...args) {
+    let argsInSingleArray = [];
+    for (let i = 0; i < args.length; i++) {
+        argsInSingleArray.push(args[i]);
+    }
+
+    return argsInSingleArray;
+}
+```
+
+This code works because the _rest parameter_ syntax `...args` represents an indefinite number of arguments in a single `Array` instance.
 
 ### Tidying up
 
@@ -236,5 +265,16 @@ $ mkdir test
 Now we move the test files into `test/`.
 
 ```shell
-$ mv *test.js test/
+$ mv *.test.js test/
 ```
+
+We cannot run our tests now because of these changes. Try to run the test and you will see this output in terminal:
+
+```shell
+FAIL test/utility.test.js
+  ● Test suite failed to run
+
+  Cannot find module './utility' from 'utility.test.js'
+```
+
+This is a simple fix: we just need to update the paths. For example, at the top of `utility.test.js`, `require('./utility');` should be updated to `require('../src/utility');`. Update all the out of date paths until the test suite runs.
