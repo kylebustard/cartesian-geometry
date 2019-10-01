@@ -10,8 +10,9 @@ This is a WIP 🚧
   - [Second test](#second-test)
   - [Edge cases](#edge-cases)
   - [Calculating distance between two points](#calculating-distance-between-two-points)
-  - [Triangulation for our project](#triangulation-for-our-project)
-    - [Classification of triangles](#classification-of-triangles)
+- [Triangulation for our project](#triangulation-for-our-project)
+  - [Comparing the sides of a triangle](#comparing-the-sides-of-a-triangle)
+  - [Classification of triangles](#classification-of-triangles)
   - [Using our `makeTriangle` function in another test](#using-our-maketriangle-function-in-another-test)
 - [Implementing a helper function](#implementing-a-helper-function)
   - [Tidying up](#tidying-up)
@@ -103,8 +104,8 @@ I update the function signature to take two parameters `pointA` and `pointB`.
 
 ```javascript
 function distanceBetweenTwoPoints(pointA, pointB) {
-    const dx = pointA[0] - pointB[0];         // difference between the points' y-coordinates
-    const dy = pointA[1] - pointB[1];         // difference between the points' x-coordinates
+    const dx = pointA[0] - pointB[0];         // difference between the points' x-coordinates
+    const dy = pointA[1] - pointB[1];         // difference between the points' y-coordinates
     const sumOfDiffs = (dx * dx) + (dy * dy); // add the squares of the difference values
 
     return Math.sqrt(sumOfDiffs);             // return the square root of the sum
@@ -113,11 +114,21 @@ function distanceBetweenTwoPoints(pointA, pointB) {
 
 The test passes! 
 
-### Triangulation for our project
+## Triangulation for our project
 
 We implement the `distanceBetweenTwoPoints` function along with the _Converse of the Pythagorean Theorem_ to classify triangles. We want to determine if a triangle is right, equilateral, isosceles, scalene, acute, or obtuse.
 
-#### Classification of triangles
+### Comparing the sides of a triangle
+
+Sides and angles are the criteria for classifying a triangle. We have not implement a way to test or measure angles, so we'll stick to the sides for now. We want to compare the sides of a triangle.
+
+Our first step is to measure the sides of a triangle.
+
+Then we compare the measurements.
+
+
+
+### Classification of triangles
 
 |  Triangle   |                              Description                              |
 | :---------: | :-------------------------------------------------------------------: |

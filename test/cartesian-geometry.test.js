@@ -1,63 +1,83 @@
-const { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle } = require('../src/cartesian-geometry');
+const { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle, measureSidesOfATriangle } = require('../src/cartesian-geometry');
 const triangleTypes = require('../constants/triangleTypes');
 const geometricTypes = require('../constants/geometricTypes');
 
 test('makes a line out of two points', () => {
-    const result = makeLine([0, 0], [1, 1]);
-    const assertion = { type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1]] };
+    const result = makeLine([[0, 0], [1, 1]]);
+    const expected = { type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1]] };
 
-    expect(result).toEqual(assertion);
+    expect(result).toEqual(expected);
 });
 
-xtest('two ordered pairs that point to identical coordinates do not make a line', () => {
-    const result = makeLine([1, 1], [1, 1]);
-    const assertion = { type: geometricTypes.LINE, coordinates: [[1, 1], [1, 1]] };
+test('two ordered pairs that point to identical coordinates do not make a line', () => {
+    const result = makeLine([[1, 1], [1, 1]]);
+    const expected = { type: geometricTypes.LINE, coordinates: [[1, 1], [1, 1]] };
 
-    expect(result).not.toBe(assertion);
+    expect(result).not.toBe(expected);
 });
 
-xtest('makes a triangle from three points', () => {
-    const result = makeTriangle([0, 0], [2, 4], [10, 5]);
+test('makes a triangle from three points', () => {
+    const result = makeTriangle([[0, 0], [2, 4], [10, 5]]);
+    const expected = { type: geometricTypes.TRIANGLE, coordinates: [[0, 0], [2, 4], [10, 5]] }
 
-    expect(result).toEqual({ type: geometricTypes.TRIANGLE, coordinates: [[0, 0], [2, 4], [10, 5]] });
+    expect(result).toEqual(expected);
 });
 
-xtest('a point is collinear if it lies on the same straight line', () => {
-    const result = makeTriangle([0, 0], [1, 1], [2, 2]);
+test('a point is collinear if it lies on the same straight line', () => {
+    const result = makeTriangle([[0, 0], [1, 1], [2, 2]]);
+    const expected = { type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1], [2, 2]] };
 
-    expect(result).toEqual({ type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1], [2, 2]] });
+    expect(result).toEqual(expected);
 });
 
-xtest('calculates the area of a triangle', () => {
-    const result = areaOfATriangle([0, 0], [2, 4], [10, 5]);
+test('calculates the area of a triangle', () => {
+    const result = areaOfATriangle([[0, 0], [2, 4], [10, 5]]);
 
     expect(result).toBe(15);
 })
 
-xtest('calculates the distance between two points', () => {
-    const result = distanceBetweenTwoPoints([15, 20], [35, 5]);
+test('calculates the distance between two points', () => {
+    const result = distanceBetweenTwoPoints([[15, 20], [35, 5]]);
 
     expect(result).toBe(25);
 });
 
+test('measures the sides of a triangle', () => {
+    const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
+    const result = measureSidesOfATriangle(triangle);
+
+    const [pointOne, pointTwo, pointThree] = triangle.coordinates;
+
+    const distOne = distanceBetweenTwoPoints([pointOne, pointTwo])
+    const distTwo = distanceBetweenTwoPoints([pointTwo, pointThree])
+    const distThree = distanceBetweenTwoPoints([pointThree, pointOne])
+    const expected = [distOne, distTwo, distThree];
+
+    expect(result).toEqual(expected);
+})
+
+xtest('compare the sides of a triangle', () => {
+    const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
+    const [sideOne, sideTwo, sideThree] = measureSidesOfATriangle(triangle);
+    const result = compareSidesOfATriangle([sideOne, sideTwo, sideThree]);
+
+    expect(result).toBe(expected);
+})
+
 xdescribe('Triangle classification', () => {
-    xtest('appends a classification property on the object returned from `makeFunction`', () => {
-        const triangle = makeTriangle([0, 0], [2, 4], [10, 5]);
+    test('appends a classification property on the object returned from `makeFunction`', () => {
+        const triangle = makeTriangle([[0, 0], [2, 4], [10, 5]]);
         const result = classifyTriangle(triangle);
+        const expected = { ...triangle, classification: null };
 
-        const triangleMock = makeTriangle([0, 0], [2, 4], [10, 5]);
-        triangleMock["classification"] = null;
-
-        expect(result).toEqual(triangleMock);
+        expect(result).toEqual(expected);
     });
 
-    xtest('Equilateral classification', () => {
-        const triangle = makeTriangle([0, 0], [3, 0], [0, 3]);
+    test('Equilateral classification', () => {
+        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
         const result = classifyTriangle(triangle);
+        const expected = { ...triangle, classification: triangleTypes.EQUILATERAL };
 
-        const triangleMock = makeTriangle([0, 0], [3, 0], [0, 3]);
-        triangleMock["classification"] = triangleTypes.EQUILATERAL;
-
-        expect(result).toBe(triangleMock);
+        expect(result.classification).toEqual(triangleTypes.EQUILATERAL);
     });
 });

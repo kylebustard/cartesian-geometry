@@ -21,8 +21,8 @@ function distanceBetweenTwoPoints(arrayOfTwoOrderedPairs) {
 }
 
 function areaOfATriangle(arrayOfThreeOrderedPairs) {
-    const [A, B, C] = arrayOfThreeOrderedPairs;
-    const result = ((A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1])) / 2);
+    const [[Ax, Ay], [Bx, By], [Cx, Cy]] = arrayOfThreeOrderedPairs;
+    const result = ((Ax * (By - Cy) + Bx * (Cy - Ay) + Cx * (Ay - By)) / 2);
 
     return Math.abs(result);
 }
@@ -35,9 +35,18 @@ function makeTriangle(arrayOfThreeOrderedPairs) {
     }
 }
 
+function measureSidesOfATriangle(triangle) {
+    const [sideOne, sideTwo, sideThree] = triangle.coordinates;
+
+    const distOne = distanceBetweenTwoPoints([sideOne, sideTwo]);
+    const distTwo = distanceBetweenTwoPoints([sideTwo, sideThree]);
+    const distThree = distanceBetweenTwoPoints([sideThree, sideOne]);
+
+    return [distOne, distTwo, distThree];
+}
+
 function classifyTriangle(obj) {
-    obj["classification"] = null;
     return obj;
 }
 
-module.exports = { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray };
+module.exports = { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfATriangle };
