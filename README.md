@@ -1,14 +1,38 @@
-# Cartesian geometry with JavaScript
+# Cartesian geometry with JavaScript <!-- omit in toc -->
 
 Exploring the Cartesian coordinate system with JavaScript and TDD.
+
+This is a WIP 🚧
+
+## Table of Contents <!-- omit in toc -->
+- [First steps](#first-steps)
+  - [First test](#first-test)
+  - [Second test](#second-test)
+  - [Edge cases](#edge-cases)
+  - [Calculating distance between two points](#calculating-distance-between-two-points)
+  - [Triangulation for our project](#triangulation-for-our-project)
+    - [Classification of triangles](#classification-of-triangles)
+  - [Using our `makeTriangle` function in another test](#using-our-maketriangle-function-in-another-test)
+- [Implementing a helper function](#implementing-a-helper-function)
+  - [Tidying up](#tidying-up)
+  - [Updating some tests](#updating-some-tests)
+- [router](#router)
+
+## First steps
+
+### First test
 
 Our first test `makes a line out of two points` will drive the development of a function that does the following: 
   - receives a couple of ordered pairs as an argument 
 	- returns an object with a property `type: 'LINE'` 
 
+### Second test
+
 Our second test `makes a triangle from three points` drives the development of a function that does the following:
   - receives three ordered pairs as an argument 
 	- returns an object with a property `type: 'TRIANGLE'` 
+
+### Edge cases
 
 Keeping the test data simple is beneficial for a few reasons. Just using coordinates like `[0, 0], [1, 1]` and `[0, 0], [1, 1], [2, 2]`. This makes the tests easy to reason about, and it helps me to imagine _edge cases_.
 
@@ -38,6 +62,8 @@ test('makes a triangle from three points', () => {
 Note that for tests I will assign the return value of a function I want to test to a variable `result`. This keeps test assertion statements short and readable.
 
 We could optionally save the old data values for a _sad path_ test of that function, or another.
+
+### Calculating distance between two points
 
 When we're dealing with lines and triangles, an essential tool is the _Pythagorean Theorem_:
 
@@ -85,7 +111,11 @@ function distanceBetweenTwoPoints(pointA, pointB) {
 }
 ```
 
-The test passes! We implement this new function along with the _Converse of the Pythagorean Theorem_ to classify triangles. We want to determine if a triangle is right, equilateral, isosceles, scalene, acute, or obtuse.
+The test passes! 
+
+### Triangulation for our project
+
+We implement the `distanceBetweenTwoPoints` function along with the _Converse of the Pythagorean Theorem_ to classify triangles. We want to determine if a triangle is right, equilateral, isosceles, scalene, acute, or obtuse.
 
 #### Classification of triangles
 
@@ -100,7 +130,7 @@ The test passes! We implement this new function along with the _Converse of the 
 
 Let's create a function that receives a triangle and appends a `classification` property on the object returned from `makeFunction`.
 
-To test this we need to build our actual data and our mock data to test against it.
+### Using our `makeTriangle` function in another test
 
 This is what our actual result data will look like:
 
@@ -112,8 +142,7 @@ This is what our actual result data will look like:
 And this is what how we make our mock data or our **exptected** data:
 
 ```javascript
-    const triangleMock = makeTriangle([0, 0], [2, 4], [10, 5]); // Create a triangle
-    triangleMock["classification"] = null;                      // Append a `classification` property to the triangle
+    const expected = { ...triangle, classification: null };  // Clone `triangle` and append a `classification` property
 ```
 
 And putting it all together in a single test looks like:
@@ -122,11 +151,9 @@ And putting it all together in a single test looks like:
 test('appends a classification property on the object returned from `makeFunction`', () => {
     const triangle = makeTriangle([0, 0], [2, 4], [10, 5]);
     const result = classifyTriangle(triangle);
+    const expected = { ...triangle, classification: null };
 
-    const triangleMock = makeTriangle([0, 0], [2, 4], [10, 5]);
-    triangleMock["classification"] = null;
-
-    expect(result).toEqual(triangleMock);
+    expect(result).toEqual(expected);
 });
 ```
 
