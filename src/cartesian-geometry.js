@@ -11,7 +11,7 @@ function makeLine(arrayOfTwoOrderedPairs) {
     }
 }
 
-function distanceBetweenTwoPoints(arrayOfTwoOrderedPairs) {
+function distBetweenTwoPoints(arrayOfTwoOrderedPairs) {
     const [A, B] = arrayOfTwoOrderedPairs;
     const dx = A[0] - B[0];
     const dy = A[1] - B[1];
@@ -27,26 +27,33 @@ function areaOfATriangle(arrayOfThreeOrderedPairs) {
     return Math.abs(result);
 }
 
+function isCollinear(arrayOfThreeOrderedPairs) {
+    return areaOfATriangle(arrayOfThreeOrderedPairs) === 0;
+}
+
 function makeTriangle(arrayOfThreeOrderedPairs) {
-    if (areaOfATriangle(arrayOfThreeOrderedPairs) === 0) {
+    if (isCollinear(arrayOfThreeOrderedPairs)) {
         return { type: geometricTypes.LINE, coordinates: arrayOfThreeOrderedPairs };
     } else {
         return { type: geometricTypes.TRIANGLE, coordinates: arrayOfThreeOrderedPairs };
     }
 }
 
-function measureSidesOfATriangle(triangle) {
-    const [sideOne, sideTwo, sideThree] = triangle.coordinates;
+function measureSidesOfAPolygon(polygon) {
+    const arr = polygon.coordinates
+    const result = arr.map((orderedPair, index) => index !== arr.length - 1 ? // is not last element in array
+        distBetweenTwoPoints([orderedPair, arr[index + 1]]) :                 // pass element and next element in array as arguments
+        distBetweenTwoPoints([orderedPair, arr[0]]));                         // or pass last element with first element
 
-    const distOne = distanceBetweenTwoPoints([sideOne, sideTwo]);
-    const distTwo = distanceBetweenTwoPoints([sideTwo, sideThree]);
-    const distThree = distanceBetweenTwoPoints([sideThree, sideOne]);
+    return result;
+}
 
-    return [distOne, distTwo, distThree];
+function compareSidesOfATriangle(measuredSidesOfATriangle) {
+
 }
 
 function classifyTriangle(obj) {
     return obj;
 }
 
-module.exports = { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfATriangle };
+module.exports = { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfAPolygon, compareSidesOfATriangle };

@@ -25,13 +25,13 @@ This is a WIP 🚧
 
 Our first test `makes a line out of two points` will drive the development of a function that does the following: 
   - receives a couple of ordered pairs as an argument 
-	- returns an object with a property `type: 'LINE'` 
+  - returns an object with a property `type: 'LINE'` 
 
 ### Second test
 
 Our second test `makes a triangle from three points` drives the development of a function that does the following:
   - receives three ordered pairs as an argument 
-	- returns an object with a property `type: 'TRIANGLE'` 
+  - returns an object with a property `type: 'TRIANGLE'` 
 
 ### Edge cases
 
@@ -338,6 +338,6 @@ All we are doing is telling the computer we expect the coordinates property to p
 As mentioned in [implementing a helper function](#implementing-a-helper-function), we are going to build a pipeline that receives input, transforms it into one data structure, and routes it to an appropiate function. Let's create new files and get started.
 
 ```shell
-touch src/router.js test/router.test.js
+$ touch src/router.js test/router.test.js
 ```
 

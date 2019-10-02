@@ -1,6 +1,7 @@
-const { makeLine, makeTriangle, areaOfATriangle, distanceBetweenTwoPoints, classifyTriangle, measureSidesOfATriangle } = require('../src/cartesian-geometry');
+const { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle } = require('../src/cartesian-geometry');
 const triangleTypes = require('../constants/triangleTypes');
 const geometricTypes = require('../constants/geometricTypes');
+const sideComparisonTypes = require('../constants/sideComparisonTypes');
 
 test('makes a line out of two points', () => {
     const result = makeLine([[0, 0], [1, 1]]);
@@ -16,52 +17,57 @@ test('two ordered pairs that point to identical coordinates do not make a line',
     expect(result).not.toBe(expected);
 });
 
-test('makes a triangle from three points', () => {
-    const result = makeTriangle([[0, 0], [2, 4], [10, 5]]);
-    const expected = { type: geometricTypes.TRIANGLE, coordinates: [[0, 0], [2, 4], [10, 5]] }
+describe('Triangle', () => {
+    const triangle = makeTriangle([[0, 0], [2, 4], [10, 5]])
 
-    expect(result).toEqual(expected);
-});
+    test('makes a triangle from three points', () => {
+        const result = triangle;
+        const expected = { type: geometricTypes.TRIANGLE, coordinates: [[0, 0], [2, 4], [10, 5]] }
 
-test('a point is collinear if it lies on the same straight line', () => {
-    const result = makeTriangle([[0, 0], [1, 1], [2, 2]]);
-    const expected = { type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1], [2, 2]] };
+        expect(result).toEqual(expected);
+    });
 
-    expect(result).toEqual(expected);
-});
+    test('a point is collinear if it lies on the same straight line', () => {
+        const result = makeTriangle([[0, 0], [1, 1], [2, 2]]);
+        const expected = { type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1], [2, 2]] };
 
-test('calculates the area of a triangle', () => {
-    const result = areaOfATriangle([[0, 0], [2, 4], [10, 5]]);
+        expect(result).toEqual(expected);
+    });
 
-    expect(result).toBe(15);
-})
+    test('calculates the area of a triangle', () => {
+        const result = areaOfATriangle([[0, 0], [2, 4], [10, 5]]);
 
-test('calculates the distance between two points', () => {
-    const result = distanceBetweenTwoPoints([[15, 20], [35, 5]]);
+        expect(result).toBe(15);
+    })
 
-    expect(result).toBe(25);
-});
+    test('calculates the distance between two points', () => {
+        const result = distBetweenTwoPoints([[15, 20], [35, 5]]);
 
-test('measures the sides of a triangle', () => {
-    const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
-    const result = measureSidesOfATriangle(triangle);
+        expect(result).toBe(25);
+    });
 
-    const [pointOne, pointTwo, pointThree] = triangle.coordinates;
+    test('measures the sides of a polygon', () => {
+        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
+        const result = measureSidesOfAPolygon(triangle);
 
-    const distOne = distanceBetweenTwoPoints([pointOne, pointTwo])
-    const distTwo = distanceBetweenTwoPoints([pointTwo, pointThree])
-    const distThree = distanceBetweenTwoPoints([pointThree, pointOne])
-    const expected = [distOne, distTwo, distThree];
+        const [pointOne, pointTwo, pointThree] = triangle.coordinates;
 
-    expect(result).toEqual(expected);
-})
+        const distOneToTwo = distBetweenTwoPoints([pointOne, pointTwo])
+        const distTwoToThree = distBetweenTwoPoints([pointTwo, pointThree])
+        const distThreeToOne = distBetweenTwoPoints([pointThree, pointOne])
+        const expected = [distOneToTwo, distTwoToThree, distThreeToOne];
 
-xtest('compare the sides of a triangle', () => {
-    const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
-    const [sideOne, sideTwo, sideThree] = measureSidesOfATriangle(triangle);
-    const result = compareSidesOfATriangle([sideOne, sideTwo, sideThree]);
+        expect(result).toEqual(expected);
+    });
 
-    expect(result).toBe(expected);
+    xtest('compare the sides of a triangle', () => {
+        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
+        const [sideOne, sideTwo, sideThree] = measureSidesOfAPolygon(triangle);
+        const result = compareSidesOfATriangle([sideOne, sideTwo, sideThree]);
+        const expected = [];
+
+        expect(result).toBe(expected);
+    })
 })
 
 xdescribe('Triangle classification', () => {
