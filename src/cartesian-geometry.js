@@ -48,6 +48,18 @@ function measureSidesOfAPolygon(polygon) {
     return result;
 }
 
+function allSidesAreEqual(polygon) {
+    const arr = measureSidesOfAPolygon(polygon);
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[0] === arr[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function compareSidesOfATriangle(measuredSidesOfATriangle) {
 
 }
@@ -56,4 +68,4 @@ function classifyTriangle(obj) {
     return obj;
 }
 
-module.exports = { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfAPolygon, compareSidesOfATriangle };
+module.exports = { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual };

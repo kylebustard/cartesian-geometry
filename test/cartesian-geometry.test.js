@@ -1,4 +1,4 @@
-const { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle } = require('../src/cartesian-geometry');
+const { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual } = require('../src/cartesian-geometry');
 const triangleTypes = require('../constants/triangleTypes');
 const geometricTypes = require('../constants/geometricTypes');
 const sideComparisonTypes = require('../constants/sideComparisonTypes');
@@ -46,32 +46,50 @@ describe('Triangle', () => {
         expect(result).toBe(25);
     });
 
-    test('measures the sides of a polygon', () => {
-        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
+})
+
+describe('Polygon', () => {
+    const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
+
+    test('measures the sides', () => {
         const result = measureSidesOfAPolygon(triangle);
 
-        const [pointOne, pointTwo, pointThree] = triangle.coordinates;
+        const expected = () => {
+            const [pointOne, pointTwo, pointThree] = triangle.coordinates;
+            const distOneToTwo = distBetweenTwoPoints([pointOne, pointTwo])
+            const distTwoToThree = distBetweenTwoPoints([pointTwo, pointThree])
+            const distThreeToOne = distBetweenTwoPoints([pointThree, pointOne])
 
-        const distOneToTwo = distBetweenTwoPoints([pointOne, pointTwo])
-        const distTwoToThree = distBetweenTwoPoints([pointTwo, pointThree])
-        const distThreeToOne = distBetweenTwoPoints([pointThree, pointOne])
-        const expected = [distOneToTwo, distTwoToThree, distThreeToOne];
+            return [distOneToTwo, distTwoToThree, distThreeToOne];
+        }
 
-        expect(result).toEqual(expected);
+        expect(result).toEqual(expected());
     });
 
-    xtest('compare the sides of a triangle', () => {
-        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
-        const [sideOne, sideTwo, sideThree] = measureSidesOfAPolygon(triangle);
-        const result = compareSidesOfATriangle([sideOne, sideTwo, sideThree]);
-        const expected = [];
+    test('All sides are equal', () => {
+        const equilateralTriangle = makeTriangle([[0, 0], [6, 0], [3, 6]]);
+        const result = allSidesAreEqual(equilateralTriangle);
 
-        expect(result).toBe(expected);
+        expect(result).toBe(true);
     })
 })
 
 xdescribe('Triangle classification', () => {
-    test('appends a classification property on the object returned from `makeFunction`', () => {
+    describe('compare the sides of a right triangle', () => {
+        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]); // Right triangle    
+        const [sideOne, sideTwo, sideThree] = measureSidesOfAPolygon(triangle);
+
+        test('two sides of equal length are EQUAL', () => {
+
+
+            const result = compareSidesOfATriangle([sideOne, sideTwo, sideThree]);
+            const expected = [];
+
+            expect(result).toBe(expected);
+        })
+    })
+
+    xtest('appends a classification property on the object returned from `makeFunction`', () => {
         const triangle = makeTriangle([[0, 0], [2, 4], [10, 5]]);
         const result = classifyTriangle(triangle);
         const expected = { ...triangle, classification: null };
@@ -79,7 +97,7 @@ xdescribe('Triangle classification', () => {
         expect(result).toEqual(expected);
     });
 
-    test('Equilateral classification', () => {
+    xtest('Equilateral classification', () => {
         const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
         const result = classifyTriangle(triangle);
         const expected = { ...triangle, classification: triangleTypes.EQUILATERAL };
