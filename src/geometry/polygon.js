@@ -1,5 +1,5 @@
-const geometricTypes = require('../constants/geometricTypes');
-const wrapArgsInSingleArray = require('./utility');
+const geometricTypes = require('../../constants/geometricTypes');
+const wrapArgsInSingleArray = require('../utility');
 
 function makeLine(arrayOfTwoOrderedPairs) {
     const [A, B] = arrayOfTwoOrderedPairs;

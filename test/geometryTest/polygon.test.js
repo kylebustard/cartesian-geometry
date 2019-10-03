@@ -1,7 +1,7 @@
-const { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual } = require('../src/cartesian-geometry');
-const triangleTypes = require('../constants/triangleTypes');
-const geometricTypes = require('../constants/geometricTypes');
-const sideComparisonTypes = require('../constants/sideComparisonTypes');
+const { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual } = require('../../src/geometry/polygon');
+const triangleTypes = require('../../constants/triangleTypes');
+const geometricTypes = require('../../constants/geometricTypes');
+const sideComparisonTypes = require('../../constants/sideComparisonTypes');
 
 test('makes a line out of two points', () => {
     const result = makeLine([[0, 0], [1, 1]]);
@@ -15,6 +15,12 @@ test('two ordered pairs that point to identical coordinates do not make a line',
     const expected = { type: geometricTypes.LINE, coordinates: [[1, 1], [1, 1]] };
 
     expect(result).not.toBe(expected);
+});
+
+test('calculates the distance between two points', () => {
+    const result = distBetweenTwoPoints([[15, 20], [35, 5]]);
+
+    expect(result).toBe(25);
 });
 
 describe('Triangle', () => {
@@ -40,11 +46,6 @@ describe('Triangle', () => {
         expect(result).toBe(15);
     })
 
-    test('calculates the distance between two points', () => {
-        const result = distBetweenTwoPoints([[15, 20], [35, 5]]);
-
-        expect(result).toBe(25);
-    });
 
 })
 
@@ -74,8 +75,8 @@ describe('Polygon', () => {
     })
 })
 
-xdescribe('Triangle classification', () => {
-    describe('compare the sides of a right triangle', () => {
+describe('Triangle classification', () => {
+    xdescribe('compare the sides of a right triangle', () => {
         const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]); // Right triangle    
         const [sideOne, sideTwo, sideThree] = measureSidesOfAPolygon(triangle);
 
