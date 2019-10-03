@@ -1,125 +1,210 @@
-const { isPoint, makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual } = require('../../src/geometry/polygon');
-const triangleTypes = require('../../constants/triangleTypes');
-const geometricTypes = require('../../constants/geometricTypes');
-const sideComparisonTypes = require('../../constants/sideComparisonTypes');
+const {
+    inputValidation,
+    orderedPair,
+    setOfOrderedPairs,
+    compareCoordinateOfFirstPairInArrayToRest,
+    numOfPairsMatchingAndDiffFromParticularCoordinate,
+    intersection,
+    sum,
+    hasDuplicatePairs,
+    locateDupes,
+    removeFirstPair,
+    recursiveRemove,
+    toggleXOrY
+} = require('../../src/geometry/polygon.js');
 
-test('makes a line out of two points', () => {
-    const result = makeLine([[0, 0], [1, 1]]);
-    const expected = { type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1]] };
+describe('given input that should be a single Array containing one or more ordered pairs', () => {
+    describe('when validating input', () => {
+        describe('and improper data is received', () => {
+            it('throws error when more than one Array is received', () => {
+                const result = () => inputValidation([1, 2], [1, 2]);
 
-    expect(result).toEqual(expected);
+                expect(result).toThrowError(/input must be a single Array/);
+            });
+
+            it('throws error when input is not an Array', () => {
+                const result = () => inputValidation({ coordinates: [1, 2] });
+
+                expect(result).toThrowError(/input must be type Array/);
+            });
+
+            it('throws error when an empty Array is received', () => {
+                const result = () => inputValidation([]);
+
+                expect(result).toThrowError(/Array must not be empty/);
+            });
+        });
+    });
+
+    describe('when validating an ordered pair', () => {
+        it('throws error when more than two coordinates are given', () => {
+            const result = () => orderedPair([[1, 2, 3]]);
+
+            expect(result).toThrowError(/ordered pairs must contain no more than two coordinates/);
+        });
+
+        it('throws error when two values representing X- and Y-coordinates are not given', () => {
+            const result = () => orderedPair([[, 3]]);
+
+            expect(result).toThrowError(/ordered pairs must contain two values representing X- and Y-coordinates/);
+        });
+    });
+
+    describe('when given input that is an Array containing more than one element', () => {
+        describe('and validating the Array elements', () => {
+            it('throws error when an Array element is not valid input', () => {
+                const result = () => setOfOrderedPairs([[1, 2], {}, []]);
+
+                expect(result).toThrowError();
+            });
+
+            it('throws error when an Array element is not a valid ordered pair', () => {
+                const result = () => setOfOrderedPairs([[1, 1], [1, 2], [, 1]]);    // third element in Array is `[ <1 empty item>, 1 ]`
+
+                expect(result).toThrowError(/ordered pairs must contain two values representing X- and Y-coordinates/);
+            });
+        });
+    });
 });
 
-describe('one or more ordered pairs will be evaluated', () => {
-    test('three ordered pairs that point to an identical coordinate make one point (and not a line or polygon)', () => {
-        const result = isPoint([[1, 1], [1, 1], [1, 1]]);
-        const expected = { type: geometricTypes.POINT, coordinates: [[1, 1]] };
+describe('given a set of ordered pairs that may contain duplicate pairs', () => {   // duplicate pairs point to identical coordinates
+    describe('then create a new array from the unique ordered pairs if there are duplicates', () => {
+        const pairsSetWithDuplicates = [[1, 1], [1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
+        const lengthOfSetWithDupes = pairsSetWithDuplicates.length;
+        const pairsSetNoDuplicates = [[1, 2], [1, 1], [2, 1]];
+        const abscissa = 0;
+        const ordinate = 1;
+        const [doMatchFirstX, doNotMatchFirstX] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(abscissa);
+        const [doMatchFirstY, doNotMatchFirstY] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(ordinate);
+        const [numOfPairsDoMatchFirstX, numOfPairsDoNotMatchFirstX] = numOfPairsMatchingAndDiffFromParticularCoordinate(pairsSetWithDuplicates)(abscissa);
+        const [numOfPairsDoMatchFirstY, numOfPairsDoNotMatchFirstY] = numOfPairsMatchingAndDiffFromParticularCoordinate(pairsSetWithDuplicates)(ordinate);
+        const sumOfDuplicatePairs = sum(numOfPairsDoMatchFirstX)(numOfPairsDoMatchFirstY);
+        const sumOfDiffPairs = sum(numOfPairsDoNotMatchFirstX)(numOfPairsDoNotMatchFirstY);
 
-        expect(result).toEqual(expected);
-    });
+        describe('determine if there are duplicates', () => {
+            describe('recursively check each coordinate of a pair in a set', () => {
+                describe('and check which pairs do match a particular pair in the set', () => {
+                    it('returns an array holding the index value of pairs whose abscissas (X-coordinates) do match that of the first ordered pair', () => {
+                        const expected = [1, 2, 3, 5];
 
-    test('`n` ordered pairs that point to `n-1` point(s) return type `null`, and their common ordered pairs are reduced', () => {
-        const result = isPoint([[1, 1], [1, 1], [1, 2]]);
-        const expected = { type: null, coordinates: [[1, 1], [1, 2]] };
+                        expect(doMatchFirstX).toEqual(expected);
+                    });
 
-        expect(result).toEqual(expected);
-    })
-})
+                    it('returns an array holding the index value of pairs whose ordinates (Y-coordinates) do match that of the first ordered pair', () => {
+                        const expected = [2, 4, 5, 6, 7];
 
+                        expect(doMatchFirstY).toEqual(expected);
+                    });
 
-// test('two ordered pairs that point to identical coordinates do not make a line', () => {
-//     const result = makeLine([[1, 1], [1, 1]]);
-//     const expected = { type: geometricTypes.LINE, coordinates: [[1, 1], [1, 1]] };
+                    it('determines the number of pairs unique of the first pair\'s abscissa', () => {
 
-//     expect(result).not.toBe(expected);
-// });
+                        expect(numOfPairsDoNotMatchFirstX).toBe(3);
+                    });
 
-test('calculates the distance between two points', () => {
-    const result = distBetweenTwoPoints([[15, 20], [35, 5]]);
+                    it('determines the number of pairs unique of the first pair\'s ordinate', () => {
 
-    expect(result).toBe(25);
-});
+                        expect(numOfPairsDoNotMatchFirstY).toBe(2);
+                    });
 
-describe('Triangle', () => {
-    const triangle = makeTriangle([[0, 0], [2, 4], [10, 5]])
+                    xit('sums the length of the number of pairs matching the first pair\'s abscissa or ordinate', () => {
 
-    test('makes a triangle from three points', () => {
-        const result = triangle;
-        const expected = { type: geometricTypes.TRIANGLE, coordinates: [[0, 0], [2, 4], [10, 5]] }
+                        expect(sumOfDuplicatePairs).toBe(9);
+                    });
 
-        expect(result).toEqual(expected);
-    });
+                    it('finds the intersection of the two sets of pairs that match the selected pair\'s abscissa and ordinate', () => {
+                        const result = intersection(doMatchFirstX)(doMatchFirstY);
 
-    test('a point is collinear if it lies on the same straight line', () => {
-        const result = makeTriangle([[0, 0], [1, 1], [2, 2]]);
-        const expected = { type: geometricTypes.LINE, coordinates: [[0, 0], [1, 1], [2, 2]] };
+                        expect(result).toEqual([2, 5]);
+                    });
+                });
 
-        expect(result).toEqual(expected);
-    });
+                describe('and check which pairs do not match a particular pair in the set', () => {
+                    it('returns an array holding the index value of pairs whose abscissas do not match that of the first ordered pair', () => {
+                        const expected = [4, 6, 7];
 
-    test('calculates the area of a triangle', () => {
-        const result = areaOfATriangle([[0, 0], [2, 4], [10, 5]]);
+                        expect(doNotMatchFirstX).toEqual(expected);
+                    });
 
-        expect(result).toBe(15);
-    })
+                    it('returns an array holding the index value of pairs whose ordinates do not match that of the first ordered pair', () => {
+                        const expected = [1, 3];
 
+                        expect(doNotMatchFirstY).toEqual(expected);
+                    });
 
-})
+                    it('determines the number of pairs unique of the first pair\'s abscissa', () => {
 
-describe('Polygon', () => {
-    const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
+                        expect(numOfPairsDoNotMatchFirstX).toBe(3);
+                    });
 
-    test('measures the sides', () => {
-        const result = measureSidesOfAPolygon(triangle);
+                    it('determines the number of pairs unique of the first pair\'s ordinate', () => {
 
-        const expected = () => {
-            const [pointOne, pointTwo, pointThree] = triangle.coordinates;
-            const distOneToTwo = distBetweenTwoPoints([pointOne, pointTwo])
-            const distTwoToThree = distBetweenTwoPoints([pointTwo, pointThree])
-            const distThreeToOne = distBetweenTwoPoints([pointThree, pointOne])
+                        expect(numOfPairsDoNotMatchFirstY).toBe(2);
+                    });
 
-            return [distOneToTwo, distTwoToThree, distThreeToOne];
-        }
+                    it('sums the length of the number of pairs unique of the first pair\'s abscissa or ordinate', () => {
 
-        expect(result).toEqual(expected());
-    });
+                        expect(sumOfDiffPairs).toBe(5);
+                    });
 
-    test('All sides are equal', () => {
-        const equilateralTriangle = makeTriangle([[0, 0], [6, 0], [3, 6]]);
-        const result = allSidesAreEqual(equilateralTriangle);
+                    it('determines there is at least one duplicate pair if `lengthOfSet - uniqueOrderedPairs` is less than `lengthOfSet - 1`', () => {
+                        const result = hasDuplicatePairs(lengthOfSetWithDupes)(sumOfDiffPairs);
 
-        expect(result).toBe(true);
-    })
-})
+                        expect(result).toBe(true);
+                    });
 
-describe('Triangle classification', () => {
-    xdescribe('compare the sides of a right triangle', () => {
-        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]); // Right triangle    
-        const [sideOne, sideTwo, sideThree] = measureSidesOfAPolygon(triangle);
+                    xit('finds the intersection of the two sets of pairs that do not match the selected pair\'s abscissa and ordinate', () => {
+                        const result = intersection(doNotMatchFirstX)(doNotMatchFirstY);
 
-        test('two sides of equal length are EQUAL', () => {
+                        expect(result).toEqual([]);
+                    });
+                });
+            });
 
+            describe('create new array with duplicate pair(s) removed', () => {
+                it('locate duplicates in set', () => {
+                    const result = locateDupes(pairsSetWithDuplicates);
 
-            const result = compareSidesOfATriangle([sideOne, sideTwo, sideThree]);
-            const expected = [];
+                    expect(result).toEqual([2, 5]);
+                });
 
-            expect(result).toBe(expected);
-        })
-    })
+                xit('removes the first pair if there is at least one duplicate', () => {
+                    const result = removeFirstPair(pairsSetWithDuplicates);
+                    const expected = [[1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
 
-    xtest('appends a classification property on the object returned from `makeFunction`', () => {
-        const triangle = makeTriangle([[0, 0], [2, 4], [10, 5]]);
-        const result = classifyTriangle(triangle);
-        const expected = { ...triangle, classification: null };
+                    expect(result).toEqual(expected);
+                });
+            });
 
-        expect(result).toEqual(expected);
-    });
+            describe('recursion', () => {
+                xit('recursively removes the first pair and creates a new array while there are duplicates', () => {
+                    const result = recursiveRemove(pairsSetWithDuplicates);
+                    const expected = pairsSetNoDuplicates;
 
-    xtest('Equilateral classification', () => {
-        const triangle = makeTriangle([[0, 0], [3, 0], [0, 3]]);
-        const result = classifyTriangle(triangle);
-        const expected = { ...triangle, classification: triangleTypes.EQUILATERAL };
+                    expect(result).toEqual(expected);
+                })
+            });
 
-        expect(result.classification).toEqual(triangleTypes.EQUILATERAL);
+            // describe('given a set of ordered pairs that has')
+
+            it('switches from X to Y or vice versa', () => {
+                const result = toggleXOrY(ordinate);
+                const expected = abscissa;
+
+                expect(result).toBe(expected);
+            });
+
+            xit('runs the algorithm for a coordinate, and then the other if the number of pairs that do not match equals less than the length of the set of ordered pairs', () => {
+                const result = toggleXOrY(abscissa);
+                const expected = numOfPairsMatchingAndDiffFromParticularCoordinate(pairsSetWithDuplicates)(ordinate);
+
+                expect(result).toEqual(expected);
+            });
+        });
+
+        xit('returns the set of ordered pairs minus the duplicates', () => {
+            const result = setOfOrderedPairs(pairsSetWithDuplicates);
+
+            expect(result).toEqual(pairsSetNoDuplicates);
+        });
     });
 });

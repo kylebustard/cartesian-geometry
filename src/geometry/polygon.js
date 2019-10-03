@@ -1,88 +1,127 @@
-const geometricTypes = require('../../constants/geometricTypes');
-const wrapArgsInSingleArray = require('../utility');
+function inputValidation(array) {
+    if (arguments.length !== 1) {
+        throw Error('input must be a single Array');
+    } else if (!Array.isArray(array)) {
+        throw Error('input must be type Array');
+    } else if (!array.length) {
+        throw Error('Array must not be empty');
+    } else {
+        return array;
+    }
+}
 
-function isPoint(arrayOfOneOrMoreOrderedPairs) {
-    let arr = arrayOfOneOrMoreOrderedPairs;
+function orderedPair(inputArray) {
+    const pair = inputArray[0];
+    const [xCoordinate, yCoordinate] = pair;
 
-    for (let i = 0; i < arr.length; i++) {
-        if (i === arr.length - 1) {
-            if (arr[i] !== arr[i + 1]) {
-                return { type: null, coordinates: arr };
+    if (pair.length > 2) {
+        throw Error('ordered pairs must contain no more than two coordinates')
+    } else if (!xCoordinate || !yCoordinate) {
+        throw Error('ordered pairs must contain two values representing X- and Y-coordinates');
+    } else {
+        return inputArray;
+    }
+}
+
+function compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray) {
+    const isDuplicateOfFirst = [];
+    const isUniqueFromFirst = [];
+
+    return function (xOrY) {
+        const coordinateFromFirstPairInArray = manyArraysInAnArray[0][xOrY];
+
+        for (let i = 1; i < manyArraysInAnArray.length; i++) {
+            if (manyArraysInAnArray[i][xOrY] === coordinateFromFirstPairInArray) {
+                isDuplicateOfFirst.push(i);
             } else {
-                let arrMinusDiffPair = arr.slice(i);
-                isPoint(arrMinusDiffPair);
+                isUniqueFromFirst.push(i);
             }
-        } else {
-            return { type: geometricTypes.POINT, coordinates: arr.slice(i) };
         }
+
+        return [isDuplicateOfFirst, isUniqueFromFirst];
     }
 }
 
-function makeLine(arrayOfTwoOrderedPairs) {
-    const [A, B] = arrayOfTwoOrderedPairs;
-
-    if (A === B) {
-        return { type: geometricTypes.POINT, coordinates: arrayOfTwoOrderedPairs };
-    } else {
-        return { type: geometricTypes.LINE, coordinates: arrayOfTwoOrderedPairs };
+function numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray) {
+    return function (xOrY) {
+        return compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(xOrY).map(arr => arr.length);
     }
 }
 
-function distBetweenTwoPoints(arrayOfTwoOrderedPairs) {
-    const [A, B] = arrayOfTwoOrderedPairs;
-    const dx = A[0] - B[0];
-    const dy = A[1] - B[1];
-    const sumOfDiffs = (dx * dx) + (dy * dy);
+function intersection(matchXOfAPair) {
+    const intersectingPairs = [];
 
-    return Math.sqrt(sumOfDiffs);
-}
+    return function (matchYOfAPair) {
+        for (let x = 0; x < matchXOfAPair.length; x++) {
+            for (let y = 0; y < matchYOfAPair.length; y++) {
+                if (matchXOfAPair[y] === matchYOfAPair[x]) {
+                    intersectingPairs.push(matchXOfAPair[y]);
+                }
 
-function areaOfATriangle(arrayOfThreeOrderedPairs) {
-    const [[Ax, Ay], [Bx, By], [Cx, Cy]] = arrayOfThreeOrderedPairs;
-    const result = ((Ax * (By - Cy) + Bx * (Cy - Ay) + Cx * (Ay - By)) / 2);
-
-    return Math.abs(result);
-}
-
-function isCollinear(arrayOfThreeOrderedPairs) {
-    return areaOfATriangle(arrayOfThreeOrderedPairs) === 0;
-}
-
-function makeTriangle(arrayOfThreeOrderedPairs) {
-    if (isCollinear(arrayOfThreeOrderedPairs)) {
-        return { type: geometricTypes.LINE, coordinates: arrayOfThreeOrderedPairs };
-    } else {
-        return { type: geometricTypes.TRIANGLE, coordinates: arrayOfThreeOrderedPairs };
-    }
-}
-
-function measureSidesOfAPolygon(polygon) {
-    const arr = polygon.coordinates
-    const result = arr.map((orderedPair, index) => index !== arr.length - 1 ? // is not last element in array
-        distBetweenTwoPoints([orderedPair, arr[index + 1]]) :                 // pass element and next element in array as arguments
-        distBetweenTwoPoints([orderedPair, arr[0]]));                         // or pass last element with first element
-
-    return result;
-}
-
-function allSidesAreEqual(polygon) {
-    const arr = measureSidesOfAPolygon(polygon);
-
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[0] === arr[i]) {
-            return false;
+            }
         }
+
+        return intersectingPairs;
+    }
+}
+
+function locateDupes(manyArraysInAnArray) {
+    const [matchesX,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0);
+    const [matchesY,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(1);
+    return intersection(matchesX)(matchesY);
+}
+
+const sum = a => b => a + b;
+
+const hasDuplicatePairs = lengthSetWithDupes => sumOfUniques => lengthSetWithDupes - sumOfUniques !== 0 ? true : false;
+
+function removeFirstPair(manyArraysInAnArray) {
+    const numPairsDiffFirstX = numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray)(0);
+    const numPairsDiffFirstY = numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray)(1);
+    const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
+
+    if (hasDuplicatePairs(manyArraysInAnArray)(sumOfUniques)) {
+        return manyArraysInAnArray.filter((_, index) => index !== 0)
+    }
+}
+
+function recursiveRemove(manyArraysInAnArray) {
+    const newArr = removeFirstPair(manyArraysInAnArray);
+    const numPairsDiffFirstX = numOfPairsMatchingAndDiffFromParticularCoordinate(newArr)(0);
+    const numPairsDiffFirstY = numOfPairsMatchingAndDiffFromParticularCoordinate(newArr)(1);
+    const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
+    const hasDupes = hasDuplicatePairs(newArr)(sumOfUniques);
+
+    if (newArr.length > 5) {
+        return recursiveRemove(newArr);
+    } else {
+        return newArr.length;
+    }
+}
+
+const toggleXOrY = xOrY => !!xOrY ? 0 : 1; // If `xOrY` is truthy and equals 1 then return 0, or else return 1.
+
+function setOfOrderedPairs(manyArraysInAnArray) {
+    for (let i = 0; i < manyArraysInAnArray.length; i++) {
+        let array = manyArraysInAnArray[i];
+        let validatedArray = inputValidation([array]);
+        orderedPair(validatedArray);
     }
 
-    return true;
+    return removeDupPairs(manyArraysInAnArray);
 }
 
-function compareSidesOfATriangle(measuredSidesOfATriangle) {
-
+module.exports = {
+    inputValidation,
+    orderedPair,
+    setOfOrderedPairs,
+    compareCoordinateOfFirstPairInArrayToRest,
+    numOfPairsMatchingAndDiffFromParticularCoordinate,
+    intersection,
+    sum,
+    locateDupes,
+    hasDuplicatePairs,
+    removeFirstPair,
+    recursiveRemove,
+    toggleXOrY
 }
-
-function classifyTriangle(obj) {
-    return obj;
-}
-
-module.exports = { isPoint, makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual };
