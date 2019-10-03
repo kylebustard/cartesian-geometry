@@ -1,6 +1,23 @@
 const geometricTypes = require('../../constants/geometricTypes');
 const wrapArgsInSingleArray = require('../utility');
 
+function isPoint(arrayOfOneOrMoreOrderedPairs) {
+    let arr = arrayOfOneOrMoreOrderedPairs;
+
+    for (let i = 0; i < arr.length; i++) {
+        if (i === arr.length - 1) {
+            if (arr[i] !== arr[i + 1]) {
+                return { type: null, coordinates: arr };
+            } else {
+                let arrMinusDiffPair = arr.slice(i);
+                isPoint(arrMinusDiffPair);
+            }
+        } else {
+            return { type: geometricTypes.POINT, coordinates: arr.slice(i) };
+        }
+    }
+}
+
 function makeLine(arrayOfTwoOrderedPairs) {
     const [A, B] = arrayOfTwoOrderedPairs;
 
@@ -68,4 +85,4 @@ function classifyTriangle(obj) {
     return obj;
 }
 
-module.exports = { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual };
+module.exports = { isPoint, makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual };

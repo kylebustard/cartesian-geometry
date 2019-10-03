@@ -1,4 +1,4 @@
-const { makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual } = require('../../src/geometry/polygon');
+const { isPoint, makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual } = require('../../src/geometry/polygon');
 const triangleTypes = require('../../constants/triangleTypes');
 const geometricTypes = require('../../constants/geometricTypes');
 const sideComparisonTypes = require('../../constants/sideComparisonTypes');
@@ -10,12 +10,29 @@ test('makes a line out of two points', () => {
     expect(result).toEqual(expected);
 });
 
-test('two ordered pairs that point to identical coordinates do not make a line', () => {
-    const result = makeLine([[1, 1], [1, 1]]);
-    const expected = { type: geometricTypes.LINE, coordinates: [[1, 1], [1, 1]] };
+describe('one or more ordered pairs will be evaluated', () => {
+    test('three ordered pairs that point to an identical coordinate make one point (and not a line or polygon)', () => {
+        const result = isPoint([[1, 1], [1, 1], [1, 1]]);
+        const expected = { type: geometricTypes.POINT, coordinates: [[1, 1]] };
 
-    expect(result).not.toBe(expected);
-});
+        expect(result).toEqual(expected);
+    });
+
+    test('`n` ordered pairs that point to `n-1` point(s) return type `null`, and their common ordered pairs are reduced', () => {
+        const result = isPoint([[1, 1], [1, 1], [1, 2]]);
+        const expected = { type: null, coordinates: [[1, 1], [1, 2]] };
+
+        expect(result).toEqual(expected);
+    })
+})
+
+
+// test('two ordered pairs that point to identical coordinates do not make a line', () => {
+//     const result = makeLine([[1, 1], [1, 1]]);
+//     const expected = { type: geometricTypes.LINE, coordinates: [[1, 1], [1, 1]] };
+
+//     expect(result).not.toBe(expected);
+// });
 
 test('calculates the distance between two points', () => {
     const result = distBetweenTwoPoints([[15, 20], [35, 5]]);
