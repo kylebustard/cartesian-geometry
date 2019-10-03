@@ -1,88 +1,160 @@
-const geometricTypes = require('../../constants/geometricTypes');
-const wrapArgsInSingleArray = require('../utility');
+function inputValidation(array) {
+    if (arguments.length !== 1) {
+        throw Error('input must be a single Array');
+    } else if (!Array.isArray(array)) {
+        throw Error('input must be type Array');
+    } else if (!array.length) {
+        throw Error('Array must not be empty');
+    } else {
+        return array;
+    }
+}
 
-function isPoint(arrayOfOneOrMoreOrderedPairs) {
-    let arr = arrayOfOneOrMoreOrderedPairs;
+function orderedPair(inputArray) {
+    const pair = inputArray[0];
+    const [xCoordinate, yCoordinate] = pair;
 
-    for (let i = 0; i < arr.length; i++) {
-        if (i === arr.length - 1) {
-            if (arr[i] !== arr[i + 1]) {
-                return { type: null, coordinates: arr };
-            } else {
-                let arrMinusDiffPair = arr.slice(i);
-                isPoint(arrMinusDiffPair);
+    if (pair.length > 2) {
+        throw Error('ordered pairs must contain no more than two coordinates')
+    } else if (!xCoordinate || !yCoordinate) {
+        throw Error('ordered pairs must contain two values representing X- and Y-coordinates');
+    } else {
+        return inputArray;
+    }
+}
+
+function compareCoordinateOfSelectPairToOthersInSet(manyArraysInAnArray) {
+
+    return function (indexOfPairToCompare) {
+        const selectedPair = manyArraysInAnArray[indexOfPairToCompare];
+        const slicedArray = manyArraysInAnArray.slice(indexOfPairToCompare);
+
+        return function (xOrY) {
+            const coordinateFromSelectedPairInArray = selectedPair[xOrY];
+            const pairAndItsDuplicates = [];
+
+            for (let i = 0; i < slicedArray.length; i++) {
+                if (slicedArray[i][xOrY] === coordinateFromSelectedPairInArray) {
+                    pairAndItsDuplicates.push(i + indexOfPairToCompare);
+                }
+            }
+
+            return pairAndItsDuplicates;
+        }
+    }
+}
+
+function intersection(matchXOfAPair) {
+    const intersectingPairs = [];
+
+    return function (matchYOfAPair) {
+        for (let x = 0; x < matchXOfAPair.length; x++) {
+            for (let y = 0; y < matchYOfAPair.length; y++) {
+                if (matchXOfAPair[y] === matchYOfAPair[x]) {
+                    intersectingPairs.push(matchXOfAPair[y]);
+                }
+
+            }
+        }
+
+        return intersectingPairs;
+    }
+}
+
+function locateDuplicatesOfPair(manyArraysInAnArray) {
+    const setOfPairs = compareCoordinateOfSelectPairToOthersInSet(manyArraysInAnArray);
+
+    return function (indexOfPairToCompare) {
+        const selectedPair = setOfPairs(indexOfPairToCompare);
+        const matchesX = selectedPair(0);
+        const matchesY = selectedPair(1);
+
+        return intersection(matchesX)(matchesY);
+    }
+}
+
+function removeDuplicateOfSelectPair(manyArraysInAnArray) {
+    const locateDupes = locateDuplicatesOfPair(manyArraysInAnArray)
+
+    return function (indexOfPairToCompare) {
+        const intersectingPairs = locateDupes(indexOfPairToCompare);
+        const setMinusSelectPairDupes = [];
+
+        for (let pair = 0; pair < manyArraysInAnArray.length; pair++) {
+            for (let i = 0; i < intersectingPairs.length - 1; i++) {
+                setMinusSelectPairDupes.push(manyArraysInAnArray[pair]);
+            }
+        }
+        console.log('XXX: ', setMinusSelectPairDupes)
+        return setMinusSelectPairDupes;
+    }
+}
+
+function initDupes(arr) {
+
+}
+
+function filterUniquePairs(manyArraysInAnArray) {
+    const locateDupes = locateDuplicatesOfPair(manyArraysInAnArray)
+    const dupes = [];
+    const lessDupes = [];
+    const trashDupes = [];
+
+    for (let i = 0; i < manyArraysInAnArray.length; i++) {
+        let potentialDupesArray = locateDupes(i);
+
+        if (dupes.length === 0 && potentialDupesArray.length !== 0) {
+            if (potentialDupesArray.length > 1) {
+                dupes.push(potentialDupesArray);    // An array nested in an array. Will need to use `.flat()` later.
             }
         } else {
-            return { type: geometricTypes.POINT, coordinates: arr.slice(i) };
-        }
-    }
-}
+            if (potentialDupesArray.length > 1) {
+                dupes.push(potentialDupesArray);
+            }
+            let flatDupes = dupes.flat();
+            let count = 0;
 
-function makeLine(arrayOfTwoOrderedPairs) {
-    const [A, B] = arrayOfTwoOrderedPairs;
+            for (let dupe = 0; dupe < flatDupes.length; dupe++) {
+                if (i === flatDupes[dupe]) {
+                    count += 1;
+                }
+            }
 
-    if (A === B) {
-        return { type: geometricTypes.POINT, coordinates: arrayOfTwoOrderedPairs };
-    } else {
-        return { type: geometricTypes.LINE, coordinates: arrayOfTwoOrderedPairs };
-    }
-}
-
-function distBetweenTwoPoints(arrayOfTwoOrderedPairs) {
-    const [A, B] = arrayOfTwoOrderedPairs;
-    const dx = A[0] - B[0];
-    const dy = A[1] - B[1];
-    const sumOfDiffs = (dx * dx) + (dy * dy);
-
-    return Math.sqrt(sumOfDiffs);
-}
-
-function areaOfATriangle(arrayOfThreeOrderedPairs) {
-    const [[Ax, Ay], [Bx, By], [Cx, Cy]] = arrayOfThreeOrderedPairs;
-    const result = ((Ax * (By - Cy) + Bx * (Cy - Ay) + Cx * (Ay - By)) / 2);
-
-    return Math.abs(result);
-}
-
-function isCollinear(arrayOfThreeOrderedPairs) {
-    return areaOfATriangle(arrayOfThreeOrderedPairs) === 0;
-}
-
-function makeTriangle(arrayOfThreeOrderedPairs) {
-    if (isCollinear(arrayOfThreeOrderedPairs)) {
-        return { type: geometricTypes.LINE, coordinates: arrayOfThreeOrderedPairs };
-    } else {
-        return { type: geometricTypes.TRIANGLE, coordinates: arrayOfThreeOrderedPairs };
-    }
-}
-
-function measureSidesOfAPolygon(polygon) {
-    const arr = polygon.coordinates
-    const result = arr.map((orderedPair, index) => index !== arr.length - 1 ? // is not last element in array
-        distBetweenTwoPoints([orderedPair, arr[index + 1]]) :                 // pass element and next element in array as arguments
-        distBetweenTwoPoints([orderedPair, arr[0]]));                         // or pass last element with first element
-
-    return result;
-}
-
-function allSidesAreEqual(polygon) {
-    const arr = measureSidesOfAPolygon(polygon);
-
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[0] === arr[i]) {
-            return false;
+            if (count === 0) {
+                lessDupes.push(manyArraysInAnArray[i]);
+            } else {
+                trashDupes.push(manyArraysInAnArray[i]);
+            }
         }
     }
 
-    return true;
+    console.log('lessDupes : ', lessDupes, 'Length: ', lessDupes.length)
+    console.log('trashDupes : ', trashDupes, 'Length: ', trashDupes.length)
 }
 
-function compareSidesOfATriangle(measuredSidesOfATriangle) {
+const sum = a => b => a + b;
 
+const toggleXOrY = xOrY => !!xOrY ? 0 : 1; // If `xOrY` is truthy and equals 1 then return 0, or else return 1.
+
+function setOfOrderedPairs(manyArraysInAnArray) {
+    for (let i = 0; i < manyArraysInAnArray.length; i++) {
+        let array = manyArraysInAnArray[i];
+        let validatedArray = inputValidation([array]);
+        orderedPair(validatedArray);
+    }
+
+    return filterUniquePairs(manyArraysInAnArray);
 }
 
-function classifyTriangle(obj) {
-    return obj;
+module.exports = {
+    inputValidation,
+    orderedPair,
+    setOfOrderedPairs,
+    compareCoordinateOfSelectPairToOthersInSet,
+    intersection,
+    sum,
+    locateDuplicatesOfPair,
+    removeDuplicateOfSelectPair,
+    filterUniquePairs,
+    toggleXOrY
 }
-
-module.exports = { isPoint, makeLine, makeTriangle, areaOfATriangle, distBetweenTwoPoints, classifyTriangle, wrapArgsInSingleArray, measureSidesOfAPolygon, compareSidesOfATriangle, allSidesAreEqual };
