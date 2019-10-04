@@ -19,7 +19,7 @@ function multiplePairs(pairs) {
         if (pairs[i][0] === pairs[i + 1][0] && pairs[i][1] === pairs[i + 1][1]) {
             return reduceIdenticalPairs(pairs);
         } else {
-            return { type: null, coordinates: [pairs[0], pairs[1]] }
+            return { type: null, coordinates: [pairs[0], pairs[1]] };
         }
     }
 }

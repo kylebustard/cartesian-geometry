@@ -47,6 +47,13 @@ describe('Input validation', () => {
 
                 expect(result).toEqual({ type: null, coordinates: [[1, 1], [1, 2]] });
             });
+
+            it('sorts through a large array, reduces identical pairs, assigns type `null` if one or more different pairs are found', () => {
+                const setOfOrderedPairs = [[1, 1], [1, 2], [1, 1], [1, 2], [1, 1], [2, 1]];
+                const result = isPoint(setOfOrderedPairs);
+
+                expect(result).toEqual({ type: null, coordinates: setOfOrderedPairs });
+            });
         });
     });
 });
