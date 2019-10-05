@@ -16,10 +16,18 @@ function reduceIdenticalPairs(pairs) {
 
 function multiplePairs(pairs) {
     for (let i = 0; i < pairs.length; i++) {
-        if (pairs[i][0] === pairs[i + 1][0] && pairs[i][1] === pairs[i + 1][1]) {
-            return reduceIdenticalPairs(pairs);
+        let firstPair = pairs[i]
+        let nextPair = pairs[i + 1]
+
+        let [firstPairX, firstPairY] = firstPair;
+        let [nextPairX, nextPairY] = nextPair;
+
+        if (firstPairX === nextPairX && firstPairY === nextPairY) {
+            let reduced = reduceIdenticalPairs(pairs);
+
+            return reduced;
         } else {
-            return { type: null, coordinates: [pairs[0], pairs[1]] };
+            return { type: null, coordinates: [firstPair, nextPair] };
         }
     }
 }

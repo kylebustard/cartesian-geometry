@@ -35,7 +35,7 @@ describe('Input validation', () => {
             expect(result).toEqual({ type: 'POINT', coordinates: orderedPair });
         });
 
-        describe('when given multiple ordered pairs', () => {
+        describe('when given two ordered pairs', () => {
             it('reduces identical ordered pairs to a single ordered pair', () => {
                 const result = isPoint([[1, 1], [1, 1]]);
 
@@ -47,9 +47,24 @@ describe('Input validation', () => {
 
                 expect(result).toEqual({ type: null, coordinates: [[1, 1], [1, 2]] });
             });
+        });
 
-            it('sorts through a large array, reduces identical pairs, assigns type `null` if one or more different pairs are found', () => {
-                const setOfOrderedPairs = [[1, 1], [1, 2], [1, 1], [1, 2], [1, 1], [2, 1]];
+        describe('when given a large array', () => {
+            const setOfOrderedPairs = [[1, 1], [1, 2], [1, 1], [1, 2], [1, 1], [2, 1]];
+
+            it('sorts through a large array', () => {
+                const result = isPoint(setOfOrderedPairs);
+
+                expect(result).toEqual({ type: null, coordinates: setOfOrderedPairs });
+            });
+
+            xit('reduces identical pairs', () => {
+                const result = isPoint(setOfOrderedPairs);
+
+                expect(result).toEqual({ type: null, coordinates: setOfOrderedPairs });
+            });
+
+            xit('assigns type `null` if one or more different pairs are found', () => {
                 const result = isPoint(setOfOrderedPairs);
 
                 expect(result).toEqual({ type: null, coordinates: setOfOrderedPairs });
