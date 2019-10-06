@@ -10,26 +10,58 @@ function isValidInput(input) {
     }
 }
 
-function reduceIdenticalPairs(pairs) {
-    return { type: 'POINT', coordinates: [pairs[0]] };
-}
-
 function multiplePairs(pairs) {
-    for (let i = 0; i < pairs.length; i++) {
-        let firstPair = pairs[i]
-        let nextPair = pairs[i + 1]
+    let rtnObj = {};
+    let newPairs = [];
+    let reduced = [];
+
+    for (let i = 0; i < pairs.length - 1; i++) {
+        let firstPair = pairs[i];
+        let nextPair = pairs[i + 1];
 
         let [firstPairX, firstPairY] = firstPair;
         let [nextPairX, nextPairY] = nextPair;
 
-        if (firstPairX === nextPairX && firstPairY === nextPairY) {
-            let reduced = reduceIdenticalPairs(pairs);
-
-            return reduced;
+        if (i === 0) {
+            if (firstPairX === nextPairX && firstPairY === nextPairY) {
+                reduced.push(firstPair);
+                newPairs.push(nextPair);
+            } else {
+                newPairs.push(firstPair, nextPair);
+                rtnObj.type = null;
+            }
         } else {
-            return { type: null, coordinates: [firstPair, nextPair] };
+            if (firstPairX === nextPairX && firstPairY === nextPairY) {
+                if (firstPair !== reduced[0]) {
+                    reduced.push(firstPair);
+                    reduced.push(nextPair);
+                    newPairs.push(nextPair);
+                } else {
+                    // do nothing
+                }
+            } else {
+                if (firstPair === reduced[0] || nextPair === reduced[0]) {
+                    if (firstPair === reduced[0]) {
+                        reduced.push(firstPair);
+                    }
+
+                    if (nextPair === reduced[0]) {
+                        reduced.push(nextPair);
+                    }
+                }
+                newPairs.push(firstPair, nextPair);
+                rtnObj.type = null;
+            }
+        }
+
+        if (!rtnObj.type === null) {
+            rtnObj.type = 'POINT';
         }
     }
+
+    rtnObj.coordinates = newPairs; console.log('[ XXX ] ', rtnObj);
+
+    return rtnObj;
 }
 
 function isPoint(orderedPair) {
