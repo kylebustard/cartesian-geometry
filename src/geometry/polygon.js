@@ -1,79 +1,67 @@
-function isValidInput(input) {
-    if (!Array.isArray(input)) {
-        throw Error('input must be an Array');
-    } else if (arguments.length !== 1) {
+function inputValidation(array) {
+    if (arguments.length !== 1) {
         throw Error('input must be a single Array');
-    } else if (input.length !== 2) {
-        throw Error('input must contain two values');
+    } else if (!Array.isArray(array)) {
+        throw Error('input must be type Array');
+    } else if (!array.length) {
+        throw Error('Array must not be empty');
     } else {
-        return input;
+        return array;
     }
 }
 
-function multiplePairs(pairs) {
-    let rtnObj = {};
-    let newPairs = [];
-    let reduced = [];
+function orderedPair(oneArrayInAnArray) {
+    const array = oneArrayInAnArray[0];
+    const [xCoordinate, yCoordinate] = array;
 
-    for (let i = 0; i < pairs.length - 1; i++) {
-        let firstPair = pairs[i];
-        let nextPair = pairs[i + 1];
+    if (array.length > 2) {
+        throw Error('ordered pairs must contain no more than two coordinates')
+    } else if (!xCoordinate || !yCoordinate) {
+        throw Error('ordered pairs must contain two values representing X- and Y-coordinates');
+    } else {
+        return oneArrayInAnArray;
+    }
+}
 
-        let [firstPairX, firstPairY] = firstPair;
-        let [nextPairX, nextPairY] = nextPair;
+function reducePair(array) {
+    return array.reduce((acc, curr) => {
+        return acc + curr
+    }, 0);
+}
 
-        if (i === 0) {
-            if (firstPairX === nextPairX && firstPairY === nextPairY) {
-                reduced.push(firstPair);
-                newPairs.push(nextPair);
-            } else {
-                newPairs.push(firstPair, nextPair);
-                rtnObj.type = null;
-            }
+function compareReducedCurrentToNext(current) {
+    return function (next) {
+        if (current !== next) {
+            return [current, next];
         } else {
-            if (firstPairX === nextPairX && firstPairY === nextPairY) {
-                if (firstPair !== reduced[0]) {
-                    reduced.push(firstPair);
-                    reduced.push(nextPair);
-                    newPairs.push(nextPair);
-                } else {
-                    // do nothing
-                }
-            } else {
-                if (firstPair === reduced[0] || nextPair === reduced[0]) {
-                    if (firstPair === reduced[0]) {
-                        reduced.push(firstPair);
-                    }
-
-                    if (nextPair === reduced[0]) {
-                        reduced.push(nextPair);
-                    }
-                }
-                newPairs.push(firstPair, nextPair);
-                rtnObj.type = null;
-            }
-        }
-
-        if (!rtnObj.type === null) {
-            rtnObj.type = 'POINT';
+            return [next];
         }
     }
-
-    rtnObj.coordinates = newPairs; console.log('[ XXX ] ', rtnObj);
-
-    return rtnObj;
 }
 
-function isPoint(orderedPair) {
-    if (!Array.isArray(orderedPair)) {
-        throw Error('input must be an Array');
+function removeDupPairs(manyArraysInAnArray) {
+    let tmpArr = [];
+    for (let i = 0; i < manyArraysInAnArray.length - 1; i++) {
+        let current = manyArraysInAnArray[i];
+        let next = manyArraysInAnArray[i + 1];
+
+        console.log(`${i}, current: ${current}`)
+        console.log(`${i + 1}, next: ${next}`)
+        tmpArr.push(compareReducedCurrentToNext(reducePair(current))(reducePair(next)));
+
     }
 
-    if (orderedPair.length > 1) {
-        return multiplePairs(orderedPair);
-    }
-
-    return { type: 'POINT', coordinates: orderedPair }
+    return tmpArr;
 }
 
-module.exports = { isValidInput, isPoint }
+function setOfOrderedPairs(manyArraysInAnArray) {
+    for (let i = 0; i < manyArraysInAnArray.length; i++) {
+        let array = manyArraysInAnArray[i];
+        let validatedArray = inputValidation([array]);
+        orderedPair(validatedArray);
+    }
+
+    return removeDupPairs(manyArraysInAnArray);
+}
+
+module.exports = { inputValidation, orderedPair, setOfOrderedPairs }
