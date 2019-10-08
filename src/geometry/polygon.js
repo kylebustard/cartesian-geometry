@@ -23,35 +23,24 @@ function orderedPair(oneArrayInAnArray) {
     }
 }
 
-function reducePair(array) {
-    return array.reduce((acc, curr) => {
-        return acc + curr
-    }, 0);
-}
+// function removeDupPairs(manyArraysInAnArray) {
 
-function compareReducedCurrentToNext(current) {
-    return function (next) {
-        if (current !== next) {
-            return [current, next];
-        } else {
-            return [next];
+// }
+
+function doNotMatchParticularCoordinate(manyArraysInAnArray) {
+    const xIsUniqueFromFirstPair = [];
+
+    return function (xOrY) {
+        const xCoordinateFromFirstPairInArray = manyArraysInAnArray[0][xOrY];
+
+        for (let i = 1; i < manyArraysInAnArray.length; i++) {
+            if (manyArraysInAnArray[i][xOrY] !== xCoordinateFromFirstPairInArray) {
+                xIsUniqueFromFirstPair.push(i);
+            }
         }
+
+        return xIsUniqueFromFirstPair;
     }
-}
-
-function removeDupPairs(manyArraysInAnArray) {
-    let tmpArr = [];
-    for (let i = 0; i < manyArraysInAnArray.length - 1; i++) {
-        let current = manyArraysInAnArray[i];
-        let next = manyArraysInAnArray[i + 1];
-
-        console.log(`${i}, current: ${current}`)
-        console.log(`${i + 1}, next: ${next}`)
-        tmpArr.push(compareReducedCurrentToNext(reducePair(current))(reducePair(next)));
-
-    }
-
-    return tmpArr;
 }
 
 function setOfOrderedPairs(manyArraysInAnArray) {
@@ -64,4 +53,9 @@ function setOfOrderedPairs(manyArraysInAnArray) {
     return removeDupPairs(manyArraysInAnArray);
 }
 
-module.exports = { inputValidation, orderedPair, setOfOrderedPairs }
+module.exports = {
+    inputValidation,
+    orderedPair,
+    setOfOrderedPairs,
+    doNotMatchParticularCoordinate
+}
