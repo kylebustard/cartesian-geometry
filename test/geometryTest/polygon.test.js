@@ -2,7 +2,8 @@ const {
     inputValidation,
     orderedPair,
     setOfOrderedPairs,
-    doNotMatchParticularCoordinate
+    doNotMatchParticularCoordinate,
+    numberOfPairsDoNotMatchParticularCoordinate
 } = require('../../src/geometry/polygon.js');
 
 describe('given input that should be a single Array containing one or more ordered pairs', () => {
@@ -76,6 +77,20 @@ describe('given input that should be a single Array containing one or more order
                     const expected = [1, 3];
 
                     expect(result).toEqual(expected);
+                });
+
+                it('determines the number of pairs unique of the first pair\'s abscissa', () => {
+                    const abscissa = 0;
+                    const result = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates, abscissa);
+
+                    expect(result).toBe(3);
+                });
+
+                it('determines the number of pairs unique of the first pair\'s ordinate', () => {
+                    const ordinate = 1;
+                    const result = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates, ordinate);
+
+                    expect(result).toBe(2);
                 });
             });
 

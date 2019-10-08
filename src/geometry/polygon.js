@@ -27,20 +27,26 @@ function orderedPair(oneArrayInAnArray) {
 
 // }
 
+
+
 function doNotMatchParticularCoordinate(manyArraysInAnArray) {
-    const xIsUniqueFromFirstPair = [];
+    const isUniqueFromFirstPair = [];
 
     return function (xOrY) {
-        const xCoordinateFromFirstPairInArray = manyArraysInAnArray[0][xOrY];
+        const coordinateFromFirstPairInArray = manyArraysInAnArray[0][xOrY];
 
         for (let i = 1; i < manyArraysInAnArray.length; i++) {
-            if (manyArraysInAnArray[i][xOrY] !== xCoordinateFromFirstPairInArray) {
-                xIsUniqueFromFirstPair.push(i);
+            if (manyArraysInAnArray[i][xOrY] !== coordinateFromFirstPairInArray) {
+                isUniqueFromFirstPair.push(i);
             }
         }
 
-        return xIsUniqueFromFirstPair;
+        return isUniqueFromFirstPair;
     }
+}
+
+function numberOfPairsDoNotMatchParticularCoordinate(one, two) {
+    return doNotMatchParticularCoordinate(one)(two).length;
 }
 
 function setOfOrderedPairs(manyArraysInAnArray) {
@@ -57,5 +63,6 @@ module.exports = {
     inputValidation,
     orderedPair,
     setOfOrderedPairs,
-    doNotMatchParticularCoordinate
+    doNotMatchParticularCoordinate,
+    numberOfPairsDoNotMatchParticularCoordinate
 }
