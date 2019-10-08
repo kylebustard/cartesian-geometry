@@ -3,7 +3,8 @@ const {
     orderedPair,
     setOfOrderedPairs,
     doNotMatchParticularCoordinate,
-    numberOfPairsDoNotMatchParticularCoordinate
+    numberOfPairsDoNotMatchParticularCoordinate,
+    toggleXOrY
 } = require('../../src/geometry/polygon.js');
 
 describe('given input that should be a single Array containing one or more ordered pairs', () => {
@@ -91,6 +92,24 @@ describe('given input that should be a single Array containing one or more order
                     const result = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates, ordinate);
 
                     expect(result).toBe(2);
+                });
+
+                it('switches from X to Y or vice versa', () => {
+                    const abscissa = 0;
+                    const ordinate = 1;
+                    const result = toggleXOrY(ordinate);
+                    const expected = abscissa;
+
+                    expect(result).toBe(expected);
+                })
+
+                xit('runs the algorithm for a coordinate, and then the other if the number of pairs that do not match equals less than the length of the set of ordered pairs', () => {
+                    const abscissa = 0;
+                    const ordinate = 1;
+                    const result = switcherXOrY(abscissa);
+                    const expected = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates, ordinate);
+
+                    expect(result).toEqual(expected);
                 });
             });
 

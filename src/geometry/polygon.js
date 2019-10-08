@@ -27,8 +27,6 @@ function orderedPair(oneArrayInAnArray) {
 
 // }
 
-
-
 function doNotMatchParticularCoordinate(manyArraysInAnArray) {
     const isUniqueFromFirstPair = [];
 
@@ -49,6 +47,14 @@ function numberOfPairsDoNotMatchParticularCoordinate(one, two) {
     return doNotMatchParticularCoordinate(one)(two).length;
 }
 
+function toggleXOrY(xOrY) {
+    if (!!xOrY) {   // check if `xOrY` is truthy and equals 1
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
 function setOfOrderedPairs(manyArraysInAnArray) {
     for (let i = 0; i < manyArraysInAnArray.length; i++) {
         let array = manyArraysInAnArray[i];
@@ -64,5 +70,6 @@ module.exports = {
     orderedPair,
     setOfOrderedPairs,
     doNotMatchParticularCoordinate,
-    numberOfPairsDoNotMatchParticularCoordinate
+    numberOfPairsDoNotMatchParticularCoordinate,
+    toggleXOrY
 }
