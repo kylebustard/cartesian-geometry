@@ -4,6 +4,8 @@ const {
     setOfOrderedPairs,
     doNotMatchParticularCoordinate,
     numberOfPairsDoNotMatchParticularCoordinate,
+    sumOfPairsThatDoNotMatchXOrYOfFirstPair,
+    diffOfLengthOfSetOfOrderedPairsMinusSumOfPairsThatDoNotMatchXOrYOfFirstPair,
     toggleXOrY
 } = require('../../src/geometry/polygon.js');
 
@@ -62,10 +64,15 @@ describe('given input that should be a single Array containing one or more order
         describe('and removing duplicate ordered pairs', () => {                // duplicates pointing to identical coordinates
             const pairsSetWithDuplicates = [[1, 1], [1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
             const pairsSetNoDuplicates = [[1, 1], [1, 2], [2, 1]];
+            const abscissa = 0;
+            const ordinate = 1;
+            const numOfPairsDoNotMatchFirstX = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates)(abscissa);
+            const numOfPairsDoNotMatchFirstY = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates)(ordinate);
+
+            const sumOfDiffPairs = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numOfPairsDoNotMatchFirstX)(numOfPairsDoNotMatchFirstY);
 
             describe('when implementing an algorithm to create a new array with unique ordered pairs', () => {
                 it('returns an array holding the index value of pairs whose abscissas (X-coordinates) do not match that of the first ordered pair', () => {
-                    const abscissa = 0;
                     const result = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(abscissa);
                     const expected = [4, 6, 7];
 
@@ -73,7 +80,6 @@ describe('given input that should be a single Array containing one or more order
                 });
 
                 it('returns an array holding the index value of pairs whose ordinates (Y-coordinates) do not match that of the first ordered pair', () => {
-                    const ordinate = 1;
                     const result = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(ordinate);
                     const expected = [1, 3];
 
@@ -81,33 +87,38 @@ describe('given input that should be a single Array containing one or more order
                 });
 
                 it('determines the number of pairs unique of the first pair\'s abscissa', () => {
-                    const abscissa = 0;
-                    const result = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates, abscissa);
 
-                    expect(result).toBe(3);
+                    expect(numOfPairsDoNotMatchFirstX).toBe(3);
                 });
 
                 it('determines the number of pairs unique of the first pair\'s ordinate', () => {
-                    const ordinate = 1;
-                    const result = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates, ordinate);
 
-                    expect(result).toBe(2);
+                    expect(numOfPairsDoNotMatchFirstY).toBe(2);
                 });
 
+                it('sums the length of the number of pairs unique of both the first pair\'s abscissa and ordinate', () => {
+
+                    expect(sumOfDiffPairs).toBe(5);
+                });
+
+                it('finds the difference of the length of the set of ordered pairs to the length of its pairs unique of both the first pair\'s abscissa and ordinate', () => {
+                    const result = diffOfLengthOfSetOfOrderedPairsMinusSumOfPairsThatDoNotMatchXOrYOfFirstPair(pairsSetWithDuplicates)(sumOfDiffPairs);
+
+                    expect(result).toBe(3)
+                });
+
+                // describe('given a set of ordered pairs that has')
+
                 it('switches from X to Y or vice versa', () => {
-                    const abscissa = 0;
-                    const ordinate = 1;
                     const result = toggleXOrY(ordinate);
                     const expected = abscissa;
 
                     expect(result).toBe(expected);
-                })
+                });
 
                 xit('runs the algorithm for a coordinate, and then the other if the number of pairs that do not match equals less than the length of the set of ordered pairs', () => {
-                    const abscissa = 0;
-                    const ordinate = 1;
-                    const result = switcherXOrY(abscissa);
-                    const expected = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates, ordinate);
+                    const result = toggleXOrY(abscissa);
+                    const expected = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates)(ordinate);
 
                     expect(result).toEqual(expected);
                 });
