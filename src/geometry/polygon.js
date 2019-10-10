@@ -23,10 +23,6 @@ function orderedPair(oneArrayInAnArray) {
     }
 }
 
-// function removeDupPairs(manyArraysInAnArray) {
-
-// }
-
 function doNotMatchParticularCoordinate(manyArraysInAnArray) {
     const isUniqueFromFirstPair = [];
 
@@ -51,11 +47,13 @@ function numberOfPairsDoNotMatchParticularCoordinate(manyArraysInAnArray) {
 
 const sumOfPairsThatDoNotMatchXOrYOfFirstPair = numPairsDiffFirstX => numPairsDiffFirstY => numPairsDiffFirstX + numPairsDiffFirstY; // 
 
-function diffOfLengthOfSetOfOrderedPairsMinusSumOfPairsThatDoNotMatchXOrYOfFirstPair(manyArraysInAnArray) {
-    return function (sumOfPairsThatDoNotMatchXOrYOfFirstPair) {
-        return manyArraysInAnArray.length - sumOfPairsThatDoNotMatchXOrYOfFirstPair;
+function setMinusPairsThatDoNotMatchXOrYOfFirstPair(manyArraysInAnArray) {
+    return function (pairsThatDoNotMatchXOrYOfFirstPair) {
+        return manyArraysInAnArray.length - pairsThatDoNotMatchXOrYOfFirstPair;
     }
 }
+
+const hasDuplicatePairs = lengthSetWithDupes => sumOfUniques => lengthSetWithDupes - sumOfUniques !== 0 ? true : false;
 
 const toggleXOrY = xOrY => !!xOrY ? 0 : 1; // If `xOrY` is truthy and equals 1 then return 0, or else return 1.
 
@@ -76,6 +74,7 @@ module.exports = {
     doNotMatchParticularCoordinate,
     numberOfPairsDoNotMatchParticularCoordinate,
     sumOfPairsThatDoNotMatchXOrYOfFirstPair,
-    diffOfLengthOfSetOfOrderedPairsMinusSumOfPairsThatDoNotMatchXOrYOfFirstPair,
+    setMinusPairsThatDoNotMatchXOrYOfFirstPair,
+    hasDuplicatePairs,
     toggleXOrY
 }
