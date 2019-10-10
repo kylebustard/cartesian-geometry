@@ -7,6 +7,7 @@ const {
     sumOfPairsThatDoNotMatchXOrYOfFirstPair,
     hasDuplicatePairs,
     removeFirstPair,
+    recursiveRemove,
     toggleXOrY
 } = require('../../src/geometry/polygon.js');
 
@@ -125,7 +126,12 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         });
 
         describe('recursion', () => {
+            it('recursively removes the first pair and creates a new array while there are duplicates', () => {
+                const result = recursiveRemove(pairsSetWithDuplicates);
+                const expected = pairsSetNoDuplicates;
 
+                expect(result).toEqual(expected);
+            })
         });
 
         // describe('given a set of ordered pairs that has')

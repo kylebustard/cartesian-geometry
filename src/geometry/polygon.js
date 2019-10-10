@@ -59,6 +59,19 @@ function removeFirstPair(manyArraysInAnArray) {
     }
 }
 
+function recursiveRemove(manyArraysInAnArray) {
+    const newArr = removeFirstPair(manyArraysInAnArray);
+
+    const numPairsDiffFirstX = numberOfPairsDoNotMatchParticularCoordinate(newArr)(0);
+    const numPairsDiffFirstY = numberOfPairsDoNotMatchParticularCoordinate(newArr)(1);
+    const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
+
+    while (hasDuplicatePairs(newArr)(sumOfUniques)) {
+        console.log(newArr);
+        recursiveRemove(newArr);
+    }
+}
+
 const toggleXOrY = xOrY => !!xOrY ? 0 : 1; // If `xOrY` is truthy and equals 1 then return 0, or else return 1.
 
 function setOfOrderedPairs(manyArraysInAnArray) {
@@ -80,5 +93,6 @@ module.exports = {
     sumOfPairsThatDoNotMatchXOrYOfFirstPair,
     hasDuplicatePairs,
     removeFirstPair,
+    recursiveRemove,
     toggleXOrY
 }
