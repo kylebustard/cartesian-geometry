@@ -5,8 +5,8 @@ const {
     doNotMatchParticularCoordinate,
     numberOfPairsDoNotMatchParticularCoordinate,
     sumOfPairsThatDoNotMatchXOrYOfFirstPair,
-    setMinusPairsThatDoNotMatchXOrYOfFirstPair,
     hasDuplicatePairs,
+    removeFirstPair,
     toggleXOrY
 } = require('../../src/geometry/polygon.js');
 
@@ -104,15 +104,7 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
 
                 it('sums the length of the number of pairs unique of both the first pair\'s abscissa and ordinate', () => {
 
-                    expect(sumOfDiffPairs).toBe(5); // HIGH = 14 ; LOW = 7
-                });
-
-                const lengthSetMinusUniquePairs = setMinusPairsThatDoNotMatchXOrYOfFirstPair(pairsSetWithDuplicates)(sumOfDiffPairs);
-
-                it('finds the difference of the length of the set of ordered pairs minus the length of its pairs unique of both the first pair\'s abscissa and ordinate', () => {
-                    const result = lengthSetMinusUniquePairs;
-
-                    expect(result).toBe(3);
+                    expect(sumOfDiffPairs).toBe(5);
                 });
 
                 it('determines there is at least one duplicate pair if `lengthOfSet - uniqueOrderedPairs` is less than `lengthOfSet - 1`', () => {
@@ -124,7 +116,12 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         });
 
         describe('create new array with duplicate pair(s) removed', () => {
+            it('removes the first pair if there is at least one duplicate', () => {
+                const result = removeFirstPair(pairsSetWithDuplicates);
+                const expected = [[1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
 
+                expect(result).toEqual(expected);
+            });
         });
 
         describe('recursion', () => {
