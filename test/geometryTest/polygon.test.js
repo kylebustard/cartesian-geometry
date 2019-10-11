@@ -2,7 +2,7 @@ const {
     inputValidation,
     orderedPair,
     setOfOrderedPairs,
-    doNotMatchParticularCoordinate,
+    compareCoordinateOfFirstPairInArrayToRest,
     numberOfPairsDoNotMatchParticularCoordinate,
     sumOfPairsThatDoNotMatchXOrYOfFirstPair,
     hasDuplicatePairs,
@@ -72,6 +72,10 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         const pairsSetNoDuplicates = [[1, 2], [1, 1], [2, 1]];
         const abscissa = 0;
         const ordinate = 1;
+        const doNotMatchFirstX = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(abscissa)[0];
+        const doNotMatchFirstY = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(ordinate)[0];
+        const doMatchFirstX = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(abscissa)[1];
+        const doMatchFirstY = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(ordinate)[1];
         const numOfPairsDoNotMatchFirstX = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates)(abscissa);
         const numOfPairsDoNotMatchFirstY = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates)(ordinate);
 
@@ -80,17 +84,15 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         describe('determine if there are duplicates', () => {
             describe('recursively check each coordinate in a pair and check if other pairs have a duplicate matching that same coordinate', () => {
                 it('returns an array holding the index value of pairs whose abscissas (X-coordinates) do not match that of the first ordered pair', () => {
-                    const result = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(abscissa);
                     const expected = [4, 6, 7];
 
-                    expect(result).toEqual(expected);
+                    expect(doNotMatchFirstX).toEqual(expected);
                 });
 
                 it('returns an array holding the index value of pairs whose ordinates (Y-coordinates) do not match that of the first ordered pair', () => {
-                    const result = doNotMatchParticularCoordinate(pairsSetWithDuplicates)(ordinate);
                     const expected = [1, 3];
 
-                    expect(result).toEqual(expected);
+                    expect(doNotMatchFirstY).toEqual(expected);
                 });
 
                 it('determines the number of pairs unique of the first pair\'s abscissa', () => {
@@ -117,7 +119,13 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         });
 
         describe('create new array with duplicate pair(s) removed', () => {
-            it('removes the first pair if there is at least one duplicate', () => {
+            it('locate duplicates of first pair in set', () => {
+                const result = locateDupes;
+
+                expect(result).toBe(3);
+            });
+
+            xit('removes the first pair if there is at least one duplicate', () => {
                 const result = removeFirstPair(pairsSetWithDuplicates);
                 const expected = [[1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
 
@@ -126,7 +134,7 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         });
 
         describe('recursion', () => {
-            it.only('recursively removes the first pair and creates a new array while there are duplicates', () => {
+            xit('recursively removes the first pair and creates a new array while there are duplicates', () => {
                 const result = recursiveRemove(pairsSetWithDuplicates);
                 const expected = pairsSetNoDuplicates;
 

@@ -23,19 +23,22 @@ function orderedPair(oneArrayInAnArray) {
     }
 }
 
-function doNotMatchParticularCoordinate(manyArraysInAnArray) {
-    const isUniqueFromFirstPair = [];
+function compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray) {
+    const isUniqueFromFirst = [];
+    const isDuplicateOfFirst = [];
 
     return function (xOrY) {
         const coordinateFromFirstPairInArray = manyArraysInAnArray[0][xOrY];
 
         for (let i = 1; i < manyArraysInAnArray.length; i++) {
             if (manyArraysInAnArray[i][xOrY] !== coordinateFromFirstPairInArray) {
-                isUniqueFromFirstPair.push(i);
+                isUniqueFromFirst.push(i);
+            } else {
+                isDuplicateOfFirst.push(i);
             }
         }
 
-        return isUniqueFromFirstPair;
+        return [isUniqueFromFirst, isDuplicateOfFirst];
     }
 }
 
@@ -67,10 +70,9 @@ function recursiveRemove(manyArraysInAnArray) {
     const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
     const hasDupes = hasDuplicatePairs(newArr)(sumOfUniques);
 
-    if (newArr.length > 3) {
+    if (newArr.length > 5) {
         return recursiveRemove(newArr);
     } else {
-
         return newArr.length;
     }
 }
@@ -91,7 +93,7 @@ module.exports = {
     inputValidation,
     orderedPair,
     setOfOrderedPairs,
-    doNotMatchParticularCoordinate,
+    compareCoordinateOfFirstPairInArrayToRest,
     numberOfPairsDoNotMatchParticularCoordinate,
     sumOfPairsThatDoNotMatchXOrYOfFirstPair,
     hasDuplicatePairs,
