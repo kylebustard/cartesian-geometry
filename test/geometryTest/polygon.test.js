@@ -69,7 +69,7 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
     describe('then create a new array from the unique ordered pairs if there are duplicates', () => {
         const pairsSetWithDuplicates = [[1, 1], [1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
         const lengthOfSetWithDupes = pairsSetWithDuplicates.length;
-        const pairsSetNoDuplicates = [[1, 1], [1, 2], [2, 1]];
+        const pairsSetNoDuplicates = [[1, 2], [1, 1], [2, 1]];
         const abscissa = 0;
         const ordinate = 1;
         const numOfPairsDoNotMatchFirstX = numberOfPairsDoNotMatchParticularCoordinate(pairsSetWithDuplicates)(abscissa);
@@ -126,7 +126,7 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         });
 
         describe('recursion', () => {
-            it('recursively removes the first pair and creates a new array while there are duplicates', () => {
+            it.only('recursively removes the first pair and creates a new array while there are duplicates', () => {
                 const result = recursiveRemove(pairsSetWithDuplicates);
                 const expected = pairsSetNoDuplicates;
 

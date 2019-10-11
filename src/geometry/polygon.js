@@ -60,15 +60,18 @@ function removeFirstPair(manyArraysInAnArray) {
 }
 
 function recursiveRemove(manyArraysInAnArray) {
+    // console.log(manyArraysInAnArray);
     const newArr = removeFirstPair(manyArraysInAnArray);
-
     const numPairsDiffFirstX = numberOfPairsDoNotMatchParticularCoordinate(newArr)(0);
     const numPairsDiffFirstY = numberOfPairsDoNotMatchParticularCoordinate(newArr)(1);
     const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
+    const hasDupes = hasDuplicatePairs(newArr)(sumOfUniques);
 
-    while (hasDuplicatePairs(newArr)(sumOfUniques)) {
-        console.log(newArr);
-        recursiveRemove(newArr);
+    if (newArr.length > 3) {
+        return recursiveRemove(newArr);
+    } else {
+
+        return newArr.length;
     }
 }
 
