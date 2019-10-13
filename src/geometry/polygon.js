@@ -65,39 +65,13 @@ function intersection(matchXOfAPair) {
     }
 }
 
-function locateDupes(manyArraysInAnArray) {
+function locateDuplicatesOfPair(manyArraysInAnArray) {
     const [matchesX,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0);
     const [matchesY,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(1);
     return intersection(matchesX)(matchesY);
 }
 
 const sum = a => b => a + b;
-
-const hasDuplicatePairs = lengthSetWithDupes => sumOfUniques => lengthSetWithDupes - sumOfUniques !== 0 ? true : false;
-
-function removeFirstPair(manyArraysInAnArray) {
-    const numPairsDiffFirstX = numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray)(0);
-    const numPairsDiffFirstY = numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray)(1);
-    const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
-
-    if (hasDuplicatePairs(manyArraysInAnArray)(sumOfUniques)) {
-        return manyArraysInAnArray.filter((_, index) => index !== 0)
-    }
-}
-
-function recursiveRemove(manyArraysInAnArray) {
-    const newArr = removeFirstPair(manyArraysInAnArray);
-    const numPairsDiffFirstX = numOfPairsMatchingAndDiffFromParticularCoordinate(newArr)(0);
-    const numPairsDiffFirstY = numOfPairsMatchingAndDiffFromParticularCoordinate(newArr)(1);
-    const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
-    const hasDupes = hasDuplicatePairs(newArr)(sumOfUniques);
-
-    if (newArr.length > 5) {
-        return recursiveRemove(newArr);
-    } else {
-        return newArr.length;
-    }
-}
 
 const toggleXOrY = xOrY => !!xOrY ? 0 : 1; // If `xOrY` is truthy and equals 1 then return 0, or else return 1.
 
@@ -119,9 +93,6 @@ module.exports = {
     numOfPairsMatchingAndDiffFromParticularCoordinate,
     intersection,
     sum,
-    locateDupes,
-    hasDuplicatePairs,
-    removeFirstPair,
-    recursiveRemove,
+    locateDuplicatesOfPair,
     toggleXOrY
 }
