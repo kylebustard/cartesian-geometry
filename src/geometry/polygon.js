@@ -10,51 +10,74 @@ function inputValidation(array) {
     }
 }
 
-function orderedPair(oneArrayInAnArray) {
-    const array = oneArrayInAnArray[0];
-    const [xCoordinate, yCoordinate] = array;
+function orderedPair(inputArray) {
+    const pair = inputArray[0];
+    const [xCoordinate, yCoordinate] = pair;
 
-    if (array.length > 2) {
+    if (pair.length > 2) {
         throw Error('ordered pairs must contain no more than two coordinates')
     } else if (!xCoordinate || !yCoordinate) {
         throw Error('ordered pairs must contain two values representing X- and Y-coordinates');
     } else {
-        return oneArrayInAnArray;
+        return inputArray;
     }
 }
 
 function compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray) {
-    const isUniqueFromFirst = [];
     const isDuplicateOfFirst = [];
+    const isUniqueFromFirst = [];
 
     return function (xOrY) {
         const coordinateFromFirstPairInArray = manyArraysInAnArray[0][xOrY];
 
         for (let i = 1; i < manyArraysInAnArray.length; i++) {
-            if (manyArraysInAnArray[i][xOrY] !== coordinateFromFirstPairInArray) {
-                isUniqueFromFirst.push(i);
-            } else {
+            if (manyArraysInAnArray[i][xOrY] === coordinateFromFirstPairInArray) {
                 isDuplicateOfFirst.push(i);
+            } else {
+                isUniqueFromFirst.push(i);
             }
         }
 
-        return [isUniqueFromFirst, isDuplicateOfFirst];
+        return [isDuplicateOfFirst, isUniqueFromFirst];
     }
 }
 
-function numberOfPairsDoNotMatchParticularCoordinate(manyArraysInAnArray) {
+function numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray) {
     return function (xOrY) {
-        return doNotMatchParticularCoordinate(manyArraysInAnArray)(xOrY).length;
+        return compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(xOrY).map(arr => arr.length);
     }
 }
 
-const sumOfPairsThatDoNotMatchXOrYOfFirstPair = numPairsDiffFirstX => numPairsDiffFirstY => numPairsDiffFirstX + numPairsDiffFirstY; // 
+function intersection(matchXOfAPair) {
+    const intersectingPairs = [];
+
+    return function (matchYOfAPair) {
+        for (let x = 0; x < matchXOfAPair.length; x++) {
+            for (let y = 0; y < matchYOfAPair.length; y++) {
+                if (matchXOfAPair[y] === matchYOfAPair[x]) {
+                    intersectingPairs.push(matchXOfAPair[y]);
+                }
+
+            }
+        }
+
+        return intersectingPairs;
+    }
+}
+
+function locateDupes(manyArraysInAnArray) {
+    const [matchesX,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0);
+    const [matchesY,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(1);
+    return intersection(matchesX)(matchesY);
+}
+
+const sum = a => b => a + b;
 
 const hasDuplicatePairs = lengthSetWithDupes => sumOfUniques => lengthSetWithDupes - sumOfUniques !== 0 ? true : false;
 
 function removeFirstPair(manyArraysInAnArray) {
-    const numPairsDiffFirstX = numberOfPairsDoNotMatchParticularCoordinate(manyArraysInAnArray)(0);
-    const numPairsDiffFirstY = numberOfPairsDoNotMatchParticularCoordinate(manyArraysInAnArray)(1);
+    const numPairsDiffFirstX = numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray)(0);
+    const numPairsDiffFirstY = numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray)(1);
     const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
 
     if (hasDuplicatePairs(manyArraysInAnArray)(sumOfUniques)) {
@@ -63,10 +86,9 @@ function removeFirstPair(manyArraysInAnArray) {
 }
 
 function recursiveRemove(manyArraysInAnArray) {
-    // console.log(manyArraysInAnArray);
     const newArr = removeFirstPair(manyArraysInAnArray);
-    const numPairsDiffFirstX = numberOfPairsDoNotMatchParticularCoordinate(newArr)(0);
-    const numPairsDiffFirstY = numberOfPairsDoNotMatchParticularCoordinate(newArr)(1);
+    const numPairsDiffFirstX = numOfPairsMatchingAndDiffFromParticularCoordinate(newArr)(0);
+    const numPairsDiffFirstY = numOfPairsMatchingAndDiffFromParticularCoordinate(newArr)(1);
     const sumOfUniques = sumOfPairsThatDoNotMatchXOrYOfFirstPair(numPairsDiffFirstX)(numPairsDiffFirstY);
     const hasDupes = hasDuplicatePairs(newArr)(sumOfUniques);
 
@@ -94,8 +116,10 @@ module.exports = {
     orderedPair,
     setOfOrderedPairs,
     compareCoordinateOfFirstPairInArrayToRest,
-    numberOfPairsDoNotMatchParticularCoordinate,
-    sumOfPairsThatDoNotMatchXOrYOfFirstPair,
+    numOfPairsMatchingAndDiffFromParticularCoordinate,
+    intersection,
+    sum,
+    locateDupes,
     hasDuplicatePairs,
     removeFirstPair,
     recursiveRemove,
