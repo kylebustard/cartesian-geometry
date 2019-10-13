@@ -27,24 +27,21 @@ function compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray) {
     const isDuplicateOfFirst = [];
     const isUniqueFromFirst = [];
 
-    return function (xOrY) {
-        const coordinateFromFirstPairInArray = manyArraysInAnArray[0][xOrY];
+    return function (indexOfPairToCompare) {
+        const thing = manyArraysInAnArray[indexOfPairToCompare]
+        return function (xOrY) {
+            const coordinateFromFirstPairInArray = thing[xOrY];
 
-        for (let i = 1; i < manyArraysInAnArray.length; i++) {
-            if (manyArraysInAnArray[i][xOrY] === coordinateFromFirstPairInArray) {
-                isDuplicateOfFirst.push(i);
-            } else {
-                isUniqueFromFirst.push(i);
+            for (let i = 1; i < manyArraysInAnArray.length; i++) {
+                if (manyArraysInAnArray[i][xOrY] === coordinateFromFirstPairInArray) {
+                    isDuplicateOfFirst.push(i);
+                } else {
+                    isUniqueFromFirst.push(i);
+                }
             }
+
+            return [isDuplicateOfFirst, isUniqueFromFirst];
         }
-
-        return [isDuplicateOfFirst, isUniqueFromFirst];
-    }
-}
-
-function numOfPairsMatchingAndDiffFromParticularCoordinate(manyArraysInAnArray) {
-    return function (xOrY) {
-        return compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(xOrY).map(arr => arr.length);
     }
 }
 
@@ -66,8 +63,8 @@ function intersection(matchXOfAPair) {
 }
 
 function locateDuplicatesOfPair(manyArraysInAnArray) {
-    const [matchesX,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0);
-    const [matchesY,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(1);
+    const [matchesX,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0)(0);
+    const [matchesY,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0)(1);
     return intersection(matchesX)(matchesY);
 }
 
@@ -105,7 +102,6 @@ module.exports = {
     orderedPair,
     setOfOrderedPairs,
     compareCoordinateOfFirstPairInArrayToRest,
-    numOfPairsMatchingAndDiffFromParticularCoordinate,
     intersection,
     sum,
     locateDuplicatesOfPair,

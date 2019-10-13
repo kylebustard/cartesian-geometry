@@ -3,7 +3,6 @@ const {
     orderedPair,
     setOfOrderedPairs,
     compareCoordinateOfFirstPairInArrayToRest,
-    numOfPairsMatchingAndDiffFromParticularCoordinate,
     intersection,
     sum,
     locateDuplicatesOfPair,
@@ -68,16 +67,12 @@ describe('given input that should be a single Array containing one or more order
 describe('given a set of ordered pairs that may contain duplicate pairs', () => {   // duplicate pairs point to identical coordinates
     describe('then create a new array from the unique ordered pairs if there are duplicates', () => {
         const pairsSetWithDuplicates = [[1, 1], [1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
-        const lengthOfSetWithDupes = pairsSetWithDuplicates.length;
         const pairsSetNoDuplicates = [[1, 2], [1, 1], [2, 1]];
+        const indexOfPairToCompare = 0;
         const abscissa = 0;
         const ordinate = 1;
-        const [doMatchFirstX, doNotMatchFirstX] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(abscissa);
-        const [doMatchFirstY, doNotMatchFirstY] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(ordinate);
-        const [numOfPairsDoMatchFirstX, numOfPairsDoNotMatchFirstX] = numOfPairsMatchingAndDiffFromParticularCoordinate(pairsSetWithDuplicates)(abscissa);
-        const [numOfPairsDoMatchFirstY, numOfPairsDoNotMatchFirstY] = numOfPairsMatchingAndDiffFromParticularCoordinate(pairsSetWithDuplicates)(ordinate);
-        const sumOfDuplicatePairs = sum(numOfPairsDoMatchFirstX)(numOfPairsDoMatchFirstY);
-        const sumOfDiffPairs = sum(numOfPairsDoNotMatchFirstX)(numOfPairsDoNotMatchFirstY);
+        const [doMatchFirstX, doNotMatchFirstX] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(indexOfPairToCompare)(abscissa);
+        const [doMatchFirstY, doNotMatchFirstY] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(indexOfPairToCompare)(ordinate);
 
         describe('determine if there are duplicates', () => {
             describe('recursively check each coordinate of a pair in a set', () => {
@@ -92,21 +87,6 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
                         const expected = [2, 4, 5, 6, 7];
 
                         expect(doMatchFirstY).toEqual(expected);
-                    });
-
-                    it('determines the number of pairs unique of the first pair\'s abscissa', () => {
-
-                        expect(numOfPairsDoNotMatchFirstX).toBe(3);
-                    });
-
-                    it('determines the number of pairs unique of the first pair\'s ordinate', () => {
-
-                        expect(numOfPairsDoNotMatchFirstY).toBe(2);
-                    });
-
-                    xit('sums the length of the number of pairs matching the first pair\'s abscissa or ordinate', () => {
-
-                        expect(sumOfDuplicatePairs).toBe(9);
                     });
 
                     it('finds the intersection of the two sets of pairs that match the selected pair\'s abscissa and ordinate', () => {
