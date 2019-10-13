@@ -71,6 +71,21 @@ function locateDuplicatesOfPair(manyArraysInAnArray) {
     return intersection(matchesX)(matchesY);
 }
 
+function removeDuplicateOfFirstPair(manyArraysInAnArray) {
+    const intersectingPairs = locateDuplicatesOfPair(manyArraysInAnArray);
+    const setMinusFirstPairDupes = [];
+
+    for (let pair = 1; pair < manyArraysInAnArray.length; pair++) {
+        for (let i = 0; i < intersectingPairs.length - 1; i++) {
+            if (pair !== intersectingPairs[i]) {
+                setMinusFirstPairDupes.push(manyArraysInAnArray[pair]);
+            }
+        }
+    }
+
+    return setMinusFirstPairDupes;
+}
+
 const sum = a => b => a + b;
 
 const toggleXOrY = xOrY => !!xOrY ? 0 : 1; // If `xOrY` is truthy and equals 1 then return 0, or else return 1.
@@ -94,5 +109,6 @@ module.exports = {
     intersection,
     sum,
     locateDuplicatesOfPair,
+    removeDuplicateOfFirstPair,
     toggleXOrY
 }

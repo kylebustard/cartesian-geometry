@@ -7,6 +7,7 @@ const {
     intersection,
     sum,
     locateDuplicatesOfPair,
+    removeDuplicateOfFirstPair,
     toggleXOrY
 } = require('../../src/geometry/polygon.js');
 
@@ -124,7 +125,9 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
                 });
 
                 it('create new array with (first set of) duplicates removed', () => {
+                    const result = removeDuplicateOfFirstPair(pairsSetWithDuplicates);
 
+                    expect(result).toEqual([[1, 2], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]]);
                 });
             });
 
