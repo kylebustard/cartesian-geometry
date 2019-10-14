@@ -2,11 +2,12 @@ const {
     inputValidation,
     orderedPair,
     setOfOrderedPairs,
-    compareCoordinateOfFirstPairInArrayToRest,
+    compareCoordinateOfSelectPairToOthersInSet,
     intersection,
     sum,
     locateDuplicatesOfPair,
-    removeDuplicateOfFirstPair,
+    removeDuplicateOfSelectPair,
+    filterUniquePairs,
     toggleXOrY
 } = require('../../src/geometry/polygon.js');
 
@@ -69,10 +70,11 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         const pairsSetWithDuplicates = [[1, 1], [1, 2], [1, 1], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]];
         const pairsSetNoDuplicates = [[1, 2], [1, 1], [2, 1]];
         const indexOfPairToCompare = 0;
+        const compareCoordinate = compareCoordinateOfSelectPairToOthersInSet(pairsSetWithDuplicates)(indexOfPairToCompare);
         const abscissa = 0;
         const ordinate = 1;
-        const [doMatchFirstX, doNotMatchFirstX] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(indexOfPairToCompare)(abscissa);
-        const [doMatchFirstY, doNotMatchFirstY] = compareCoordinateOfFirstPairInArrayToRest(pairsSetWithDuplicates)(indexOfPairToCompare)(ordinate);
+        const doMatchX = compareCoordinate(abscissa);
+        const doMatchY = compareCoordinate(ordinate);
 
         describe('determine if there are duplicates', () => {
             describe('recursively check each coordinate of a pair in a set', () => {
@@ -80,17 +82,17 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
                     it('returns an array holding the index value of pairs whose abscissas (X-coordinates) do match that of the first ordered pair', () => {
                         const expected = [1, 2, 3, 5];
 
-                        expect(doMatchFirstX).toEqual(expected);
+                        expect(doMatchX).toEqual(expected);
                     });
 
                     it('returns an array holding the index value of pairs whose ordinates (Y-coordinates) do match that of the first ordered pair', () => {
                         const expected = [2, 4, 5, 6, 7];
 
-                        expect(doMatchFirstY).toEqual(expected);
+                        expect(doMatchY).toEqual(expected);
                     });
 
                     it('finds the intersection of the two sets of pairs that match the selected pair\'s abscissa and ordinate', () => {
-                        const result = intersection(doMatchFirstX)(doMatchFirstY);
+                        const result = intersection(doMatchX)(doMatchY);
 
                         expect(result).toEqual([2, 5]);
                     });
@@ -99,22 +101,24 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
 
             describe('create new array with duplicate pair(s) removed', () => {
                 it('locate duplicates in set', () => {
-                    const result = locateDuplicatesOfPair(pairsSetWithDuplicates);
+                    const result = locateDuplicatesOfPair(pairsSetWithDuplicates)(indexOfPairToCompare);
 
                     expect(result).toEqual([2, 5]);
                 });
 
-                it('create new array with (first set of) duplicates removed', () => {
-                    const result = removeDuplicateOfFirstPair(pairsSetWithDuplicates);
+                it('create new array with (selected set of) duplicates removed', () => {
+                    const result = removeDuplicateOfSelectPair(pairsSetWithDuplicates)(indexOfPairToCompare);
 
                     expect(result).toEqual([[1, 2], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]]);
                 });
             });
 
             describe('recursion', () => {
-                xit('recursively removes the first pair and creates a new array while there are duplicates', () => {
+                it('recursively removes duplicates and creates new array free of duplicates', () => {
+                    const result = filterUniquePairs(pairsSetWithDuplicates);
 
-                })
+                    expect(result).toEqual(pairsSetNoDuplicates);
+                });
             });
 
             it('switches from X to Y or vice versa', () => {
@@ -123,19 +127,6 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
 
                 expect(result).toBe(expected);
             });
-
-            xit('runs the algorithm for a coordinate, and then the other if the number of pairs that do not match equals less than the length of the set of ordered pairs', () => {
-                const result = toggleXOrY(abscissa);
-                const expected = numOfPairsMatchingAndDiffFromParticularCoordinate(pairsSetWithDuplicates)(ordinate);
-
-                expect(result).toEqual(expected);
-            });
-        });
-
-        xit('returns the set of ordered pairs minus the duplicates', () => {
-            const result = setOfOrderedPairs(pairsSetWithDuplicates);
-
-            expect(result).toEqual(pairsSetNoDuplicates);
         });
     });
 });

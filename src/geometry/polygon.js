@@ -23,24 +23,23 @@ function orderedPair(inputArray) {
     }
 }
 
-function compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray) {
-    const isDuplicateOfFirst = [];
-    const isUniqueFromFirst = [];
+function compareCoordinateOfSelectPairToOthersInSet(manyArraysInAnArray) {
 
     return function (indexOfPairToCompare) {
-        const thing = manyArraysInAnArray[indexOfPairToCompare]
-        return function (xOrY) {
-            const coordinateFromFirstPairInArray = thing[xOrY];
+        const selectedPair = manyArraysInAnArray[indexOfPairToCompare];
+        const slicedArray = manyArraysInAnArray.slice(indexOfPairToCompare);
 
-            for (let i = 1; i < manyArraysInAnArray.length; i++) {
-                if (manyArraysInAnArray[i][xOrY] === coordinateFromFirstPairInArray) {
-                    isDuplicateOfFirst.push(i);
-                } else {
-                    isUniqueFromFirst.push(i);
+        return function (xOrY) {
+            const coordinateFromSelectedPairInArray = selectedPair[xOrY];
+            const duplicatesOfPair = [];
+
+            for (let i = 0; i < slicedArray.length; i++) {
+                if (i !== indexOfPairToCompare && slicedArray[i][xOrY] === coordinateFromSelectedPairInArray) {
+                    duplicatesOfPair.push(i + indexOfPairToCompare);
                 }
             }
 
-            return [isDuplicateOfFirst, isUniqueFromFirst];
+            return duplicatesOfPair;
         }
     }
 }
@@ -63,24 +62,72 @@ function intersection(matchXOfAPair) {
 }
 
 function locateDuplicatesOfPair(manyArraysInAnArray) {
-    const [matchesX,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0)(0);
-    const [matchesY,] = compareCoordinateOfFirstPairInArrayToRest(manyArraysInAnArray)(0)(1);
-    return intersection(matchesX)(matchesY);
+    const setOfPairs = compareCoordinateOfSelectPairToOthersInSet(manyArraysInAnArray);
+
+    return function (indexOfPairToCompare) {
+        const selectedPair = setOfPairs(indexOfPairToCompare);
+        const matchesX = selectedPair(0);
+        const matchesY = selectedPair(1);
+
+        return intersection(matchesX)(matchesY);
+    }
 }
 
-function removeDuplicateOfFirstPair(manyArraysInAnArray) {
-    const intersectingPairs = locateDuplicatesOfPair(manyArraysInAnArray);
-    const setMinusFirstPairDupes = [];
+function removeDuplicateOfSelectPair(manyArraysInAnArray) {
+    const locateDupes = locateDuplicatesOfPair(manyArraysInAnArray)
 
-    for (let pair = 1; pair < manyArraysInAnArray.length; pair++) {
-        for (let i = 0; i < intersectingPairs.length - 1; i++) {
-            if (pair !== intersectingPairs[i]) {
-                setMinusFirstPairDupes.push(manyArraysInAnArray[pair]);
+    return function (indexOfPairToCompare) {
+        const intersectingPairs = locateDupes(indexOfPairToCompare);
+        const setMinusSelectPairDupes = [];
+
+        for (let pair = 1; pair < manyArraysInAnArray.length; pair++) {
+            for (let i = 0; i < intersectingPairs.length - 1; i++) {
+                if (pair !== intersectingPairs[i]) {
+                    setMinusSelectPairDupes.push(manyArraysInAnArray[pair]);
+                }
+            }
+        }
+
+        return setMinusSelectPairDupes;
+    }
+}
+
+function filterUniquePairs(manyArraysInAnArray) {
+    const locateDupes = locateDuplicatesOfPair(manyArraysInAnArray)
+    const dupes = [];
+    const lessDupes = [];
+    const trashDupes = [];
+
+    for (let i = 0; i < manyArraysInAnArray.length; i++) {
+        let potentialDupesArray = locateDupes(i);
+
+        if (dupes.length === 0 && potentialDupesArray.length !== 0) {
+            if (potentialDupesArray.length > 1) {
+                dupes.push(potentialDupesArray);    // An array nested in an array. Will need to use `.flat()` later.
+            }
+        } else {
+            if (potentialDupesArray.length > 1) {
+                dupes.push(potentialDupesArray);
+            }
+            let flatDupes = dupes.flat();
+            let count = 0;
+
+            for (let dupe = 0; dupe < flatDupes.length; dupe++) {
+                if (i === flatDupes[dupe]) {
+                    count += 1;
+                }
+            }
+
+            if (count === 0) {
+                lessDupes.push(manyArraysInAnArray[i]);
+            } else {
+                trashDupes.push(manyArraysInAnArray[i]);
             }
         }
     }
 
-    return setMinusFirstPairDupes;
+    console.log('lessDupes : ', lessDupes, 'Length: ', lessDupes.length)
+    console.log('trashDupes : ', trashDupes, 'Length: ', trashDupes.length)
 }
 
 const sum = a => b => a + b;
@@ -94,17 +141,18 @@ function setOfOrderedPairs(manyArraysInAnArray) {
         orderedPair(validatedArray);
     }
 
-    return removeDupPairs(manyArraysInAnArray);
+    return filterUniquePairs(manyArraysInAnArray);
 }
 
 module.exports = {
     inputValidation,
     orderedPair,
     setOfOrderedPairs,
-    compareCoordinateOfFirstPairInArrayToRest,
+    compareCoordinateOfSelectPairToOthersInSet,
     intersection,
     sum,
     locateDuplicatesOfPair,
-    removeDuplicateOfFirstPair,
+    removeDuplicateOfSelectPair,
+    filterUniquePairs,
     toggleXOrY
 }
