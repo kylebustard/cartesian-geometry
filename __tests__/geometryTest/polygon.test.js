@@ -79,14 +79,14 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
         describe('determine if there are duplicates', () => {
             describe('recursively check each coordinate of a pair in a set', () => {
                 describe('and check which pairs do match a particular pair in the set', () => {
-                    it('returns an array holding the index value of pairs whose abscissas (X-coordinates) do match that of the first ordered pair', () => {
-                        const expected = [1, 2, 3, 5];
+                    it('returns an array holding the index value of a selected pair and all other pairs whose abscissas (X-coordinates) match its own', () => {
+                        const expected = [0, 1, 2, 3, 5];
 
                         expect(doMatchX).toEqual(expected);
                     });
 
-                    it('returns an array holding the index value of pairs whose ordinates (Y-coordinates) do match that of the first ordered pair', () => {
-                        const expected = [2, 4, 5, 6, 7];
+                    it('returns an array holding the index value of a selected pair and all other pairs whose ordinates (Y-coordinates) match its own', () => {
+                        const expected = [0, 2, 4, 5, 6, 7];
 
                         expect(doMatchY).toEqual(expected);
                     });
@@ -94,19 +94,19 @@ describe('given a set of ordered pairs that may contain duplicate pairs', () => 
                     it('finds the intersection of the two sets of pairs that match the selected pair\'s abscissa and ordinate', () => {
                         const result = intersection(doMatchX)(doMatchY);
 
-                        expect(result).toEqual([2, 5]);
+                        expect(result).toEqual([0, 2, 5]);
                     });
                 });
             });
 
             describe('create new array with duplicate pair(s) removed', () => {
-                it('locate duplicates in set', () => {
+                it('create new array containing set of selected pair and its duplicates', () => {
                     const result = locateDuplicatesOfPair(pairsSetWithDuplicates)(indexOfPairToCompare);
 
-                    expect(result).toEqual([2, 5]);
+                    expect(result).toEqual([0, 2, 5]);
                 });
 
-                it('create new array with (selected set of) duplicates removed', () => {
+                it('create new array of the set with duplicates of a selected pair (except for one–the highest indexed) removed', () => {
                     const result = removeDuplicateOfSelectPair(pairsSetWithDuplicates)(indexOfPairToCompare);
 
                     expect(result).toEqual([[1, 2], [1, 2], [2, 1], [1, 1], [2, 1], [2, 1]]);

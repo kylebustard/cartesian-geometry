@@ -31,15 +31,15 @@ function compareCoordinateOfSelectPairToOthersInSet(manyArraysInAnArray) {
 
         return function (xOrY) {
             const coordinateFromSelectedPairInArray = selectedPair[xOrY];
-            const duplicatesOfPair = [];
+            const pairAndItsDuplicates = [];
 
             for (let i = 0; i < slicedArray.length; i++) {
-                if (i !== indexOfPairToCompare && slicedArray[i][xOrY] === coordinateFromSelectedPairInArray) {
-                    duplicatesOfPair.push(i + indexOfPairToCompare);
+                if (slicedArray[i][xOrY] === coordinateFromSelectedPairInArray) {
+                    pairAndItsDuplicates.push(i + indexOfPairToCompare);
                 }
             }
 
-            return duplicatesOfPair;
+            return pairAndItsDuplicates;
         }
     }
 }
@@ -80,16 +80,18 @@ function removeDuplicateOfSelectPair(manyArraysInAnArray) {
         const intersectingPairs = locateDupes(indexOfPairToCompare);
         const setMinusSelectPairDupes = [];
 
-        for (let pair = 1; pair < manyArraysInAnArray.length; pair++) {
+        for (let pair = 0; pair < manyArraysInAnArray.length; pair++) {
             for (let i = 0; i < intersectingPairs.length - 1; i++) {
-                if (pair !== intersectingPairs[i]) {
-                    setMinusSelectPairDupes.push(manyArraysInAnArray[pair]);
-                }
+                setMinusSelectPairDupes.push(manyArraysInAnArray[pair]);
             }
         }
-
+        console.log('XXX: ', setMinusSelectPairDupes)
         return setMinusSelectPairDupes;
     }
+}
+
+function initDupes(arr) {
+
 }
 
 function filterUniquePairs(manyArraysInAnArray) {
