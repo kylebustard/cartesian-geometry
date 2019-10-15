@@ -6,6 +6,12 @@ This is a WIP 🚧
 
 ## Table of Contents <!-- omit in toc -->
 - [First steps](#first-steps)
+  - [Validating our input data](#validating-our-input-data)
+    - [Input type validation](#input-type-validation)
+    - [Ordered Pair validation](#ordered-pair-validation)
+    - [Input has more than one ordered pair](#input-has-more-than-one-ordered-pair)
+  - [Removing duplicate pairs](#removing-duplicate-pairs)
+- [Let's build polygons!](#lets-build-polygons)
   - [First test](#first-test)
   - [Second test](#second-test)
   - [Edge cases](#edge-cases)
@@ -20,6 +26,82 @@ This is a WIP 🚧
 - [router](#router)
 
 ## First steps
+
+### Validating our input data
+
+#### Input type validation
+
+The input our program will expect is an array of data. If it is not an array, the program should throw an error. Here are some test cases for handling bad data:
+
+```
+When validating input and improper data is received
+    throws error when more than one Array is received
+    throws error when input is not an Array
+    throws error when an empty Array is received
+```
+
+#### Ordered Pair validation
+
+Once we're confident that our data will be an array, we can implement more test cases to assure the input array contains data that is one or more ordered pairs:
+
+```
+When validating an ordered pair
+    throws error when more than two coordinates are given
+    throws error when two values representing X- and Y-coordinates are not given
+```
+
+#### Input has more than one ordered pair
+
+Now we can test that our program validates all data in the case that the input has more than one ordered pair:
+
+```
+Given input that is an Array containing more than one element and validating the Array elements
+    throws error when an Array element is not valid input
+    throws error when an Array element is not a valid ordered pair
+```
+
+### Removing duplicate pairs
+
+Finally, we ensure that each ordered pair is unique and not a duplicate of another pair in the set. 
+>Duplicate pairs point to identical coordinates.
+
+```
+Given a set of ordered pairs that may contain duplicates of one or more ordered pairs, then create a new array containing only unique ordered pairs 
+    returns true if the asbcissa & ordinate of one pair equal those of another
+    finds all occurences of an ordered pair
+    selects next pair that is not an occurence of the previous
+    returns the last value in each array in a new array that is flat
+    return array with valid ordered pairs and no duplicates
+```
+
+This will not be as straightforward as it seems. Although our data will be inside an array, the common array methods work well for primitive data types but not reference data types like the arrays we will be working with. 
+
+```javascript
+const arrayOfNums = [1, 1, 2, 2, 3, 1];
+const setOfPairs = [[1, 1],[1, 1], [2, 2], [3, 3]];
+
+console.log(arrayOfNums.includes(1));   // true
+console.log(setOfPairs.includes([1, 1]));   // false, when we expected true
+```
+
+The JavaScript `Set` object can be used to return an array sans duplicate values, unless the values are object references.
+
+```javascript
+const arrayOfNums = [1, 1, 2, 2, 3, 1];
+const noDupes = [...new Set(arrayOfNums)];
+console.log(noDupes);  // [1, 2, 3]
+
+const setOfPairs = [[1, 1],[1, 1], [2, 2], [3, 3]];
+const noDupesJk = [...new Set(setOfPairs)];
+
+console.log(noDupesJk); // [ [ 1, 1 ], [ 1, 1 ], [ 2, 2 ], [ 3, 3 ] ]
+```
+
+---
+
+🚧 **This section is out of date, but it will be updated soon.** 🏗
+
+## Let's build polygons!
 
 ### First test
 
