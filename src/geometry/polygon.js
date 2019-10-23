@@ -1,39 +1,42 @@
-function inputValidation(array) {
-    if (arguments.length !== 1) {
-        throw Error('input must be a single Array');
-    } else if (!Array.isArray(array)) {
-        throw Error('input must be type Array');
-    } else if (!array.length) {
-        throw Error('Array must not be empty');
-    } else {
-        return array;
-    }
-}
-
-function orderedPair(inputArray) {
-    const pair = inputArray[0];
-    const [xCoordinate, yCoordinate] = pair;
-
-    if (pair.length > 2) {
-        throw Error('ordered pairs must contain no more than two coordinates')
-    } else if (!xCoordinate || !yCoordinate) {
-        throw Error('ordered pairs must contain two values representing X- and Y-coordinates');
-    } else {
-        return inputArray;
-    }
-}
+module.exports = { setOfOrderedPairs }
 
 function setOfOrderedPairs(nestedArrays) {
-    const length = nestedArrays.length;
-    let array, validatedArray;
+    const validatedInput = inputValidation(nestedArrays);
+    validatedInput(arguments.length);
 
-    for (let i = 0; i < length; i++) {
-        array = nestedArrays[i];
-        validatedArray = inputValidation([array]);
-        orderedPair(validatedArray);
+    const len = nestedArrays.length;
+    const setToBeValidated = orderedPairValidation(nestedArrays);
+
+    for (let i = 0; i < len; i++) {
+        setToBeValidated(i);
     }
 
     return noDupes(nestedArrays);
+}
+
+function inputValidation(array) {
+    return function (argsLength) {
+        if (argsLength !== 1) {
+            throw Error('input must be a single Array');
+        } else if (!Array.isArray(array)) {
+            throw Error('input must be type Array');
+        } else if (!array.length) {
+            throw Error('Array must not be empty');
+        }
+    }
+}
+
+function orderedPairValidation(inputArray) {
+    return function (index) {
+        const pair = inputArray[index];
+        const [xCoordinate, yCoordinate] = pair;
+
+        if (pair.length > 2) {
+            throw Error('ordered pairs must contain no more than two coordinates')
+        } else if (!xCoordinate || !yCoordinate) {
+            throw Error('ordered pairs must contain two values representing X- and Y-coordinates');
+        }
+    }
 }
 
 function pairsAreEqual(pairOne) {
@@ -62,21 +65,7 @@ function findAllOccurencesOfPair(nestedArrays) {
     }
 }
 
-function indexOfNextUniquePair(nestedArrays) {
-    const length = nestedArrays.length;
-    const occurences = findAllOccurencesOfPair(nestedArrays);
-
-    return indexOfPair => {
-        const firstPairOccurences = occurences(indexOfPair);
-
-        for (let i = indexOfPair + 1; i < length; i++) {
-
-            return firstPairOccurences.includes(i) ? indexOfNextUniquePair(nestedArrays.slice(i)) : i;
-        }
-    }
-}
-
-const lastValueInArray = nestedArrays => nestedArrays.map(subArray => subArray[subArray.length - 1]).flat();
+const lastValueInArray = nestedArrays => nestedArrays.map(subArray => subArray[subArray.length - 1]);
 
 function noDupes(nestedArrays) {
     const length = nestedArrays.length;
@@ -88,16 +77,5 @@ function noDupes(nestedArrays) {
             arr.push(findAllOccurences(i));
         }
     }
-    return lastValueInArray(arr).sort().map(i => nestedArrays[i]);
-}
-
-module.exports = {
-    inputValidation,
-    orderedPair,
-    pairsAreEqual,
-    findAllOccurencesOfPair,
-    indexOfNextUniquePair,
-    lastValueInArray,
-    noDupes,
-    setOfOrderedPairs
+    return lastValueInArray(arr).flat().sort().map(i => nestedArrays[i]);
 }
