@@ -1,0 +1,6 @@
+const POINT = 'POINT';
+const LINE = 'LINE';
+const TRIANGLE = 'TRIANGLE';
+const QUADRILATERAL = 'QUADRILATERAL';
+
+module.exports = { POINT, LINE, TRIANGLE, QUADRILATERAL };

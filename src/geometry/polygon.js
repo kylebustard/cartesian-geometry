@@ -1,81 +1,42 @@
-module.exports = { setOfOrderedPairs }
+const { POINT, LINE, TRIANGLE, QUADRILATERAL } = require('./constants');
 
-function setOfOrderedPairs(nestedArrays) {
-    const validatedInput = inputValidation(nestedArrays);
-    validatedInput(arguments.length);
-
-    const len = nestedArrays.length;
-    const setToBeValidated = orderedPairValidation(nestedArrays);
-
-    for (let i = 0; i < len; i++) {
-        setToBeValidated(i);
-    }
-
-    return noDupes(nestedArrays);
+function polygon(orderedPairSet) {
+  switch (orderedPairSet.length) {
+    case 1:
+      return makePoint(orderedPairSet);
+    case 2:
+      return makeLine(orderedPairSet);
+    case 3:
+      return makeTriangle(orderedPairSet);
+    case 4:
+      return makeQuadrilateral(orderedPairSet);
+  }
 }
 
-function inputValidation(array) {
-    return function (argsLength) {
-        if (argsLength !== 1) {
-            throw Error('input must be a single Array');
-        } else if (!Array.isArray(array)) {
-            throw Error('input must be type Array');
-        } else if (!array.length) {
-            throw Error('Array must not be empty');
-        }
-    }
+function makeQuadrilateral(orderedPairSet) {
+  return { type: QUADRILATERAL, coordinates: orderedPairSet };
 }
 
-function orderedPairValidation(inputArray) {
-    return function (index) {
-        const pair = inputArray[index];
-        const [xCoordinate, yCoordinate] = pair;
+function areaOfTriangle(orderedPairSet) {
+  const [Ax, Ay] = orderedPairSet[0];
+  const [Bx, By] = orderedPairSet[1];
+  const [Cx, Cy] = orderedPairSet[2];
 
-        if (pair.length > 2) {
-            throw Error('ordered pairs must contain no more than two coordinates')
-        } else if (!xCoordinate || !yCoordinate) {
-            throw Error('ordered pairs must contain two values representing X- and Y-coordinates');
-        }
-    }
+  return Math.abs((Ax * (By - Cy) + Bx * (Cy - Ay) + Cx * (Ay - By)) / 2);
 }
 
-function pairsAreEqual(pairOne) {
-    const pairOneX = pairOne[0];
-    const pairOneY = pairOne[1];
-
-    return pairTwo => (pairOneX === pairTwo[0] && pairOneY === pairTwo[1]) ? true : false;
+function makeTriangle(orderedPairSet) {
+  return areaOfTriangle(orderedPairSet) > 0
+    ? { type: TRIANGLE, coordinates: orderedPairSet }
+    : { type: LINE, coordinates: orderedPairSet };
 }
 
-function findAllOccurencesOfPair(nestedArrays) {
-    const arrayLength = nestedArrays.length;
-
-    return indexOfPair => {
-        const checkPair = pairsAreEqual(nestedArrays[indexOfPair]);
-        const indices = [];
-
-        for (let i = indexOfPair; i < arrayLength; i++) {
-            const pair = nestedArrays[i];
-
-            if (checkPair(pair)) {
-                indices.push(i);
-            }
-        }
-
-        return indices;
-    }
+function makeLine(orderedPairSet) {
+  return { type: LINE, coordinates: orderedPairSet };
 }
 
-const lastValueInArray = nestedArrays => nestedArrays.map(subArray => subArray[subArray.length - 1]);
-
-function noDupes(nestedArrays) {
-    const length = nestedArrays.length;
-    const arr = [];
-    const findAllOccurences = findAllOccurencesOfPair(nestedArrays);
-
-    for (let i = 0; i < length; i++) {
-        if (!arr.flat().includes(i)) {
-            arr.push(findAllOccurences(i));
-        }
-    }
-    return lastValueInArray(arr).flat().sort().map(i => nestedArrays[i]);
+function makePoint(orderedPairSet) {
+  return { type: POINT, coordinates: orderedPairSet };
 }
+
+module.exports = polygon;
