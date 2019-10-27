@@ -1,4 +1,10 @@
-const { POINT, LINE, TRIANGLE, QUADRILATERAL } = require('./constants');
+const {
+  POINT,
+  LINE,
+  TRIANGLE,
+  QUADRILATERAL
+} = require('./constants/polygonTypes');
+const makeTriangle = require('./triangle');
 
 function polygon(orderedPairSet) {
   switch (orderedPairSet.length) {
@@ -15,20 +21,6 @@ function polygon(orderedPairSet) {
 
 function makeQuadrilateral(orderedPairSet) {
   return { type: QUADRILATERAL, coordinates: orderedPairSet };
-}
-
-function areaOfTriangle(orderedPairSet) {
-  const [Ax, Ay] = orderedPairSet[0];
-  const [Bx, By] = orderedPairSet[1];
-  const [Cx, Cy] = orderedPairSet[2];
-
-  return Math.abs((Ax * (By - Cy) + Bx * (Cy - Ay) + Cx * (Ay - By)) / 2);
-}
-
-function makeTriangle(orderedPairSet) {
-  return areaOfTriangle(orderedPairSet) > 0
-    ? { type: TRIANGLE, coordinates: orderedPairSet }
-    : { type: LINE, coordinates: orderedPairSet };
 }
 
 function makeLine(orderedPairSet) {

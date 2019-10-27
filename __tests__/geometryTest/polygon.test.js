@@ -4,7 +4,7 @@ const {
   LINE,
   TRIANGLE,
   QUADRILATERAL
-} = require('../../src/geometry/constants');
+} = require('../../src/geometry/constants/polygonTypes');
 
 describe('given a set of one or more ordered pairs', () => {
   describe('one', () => {
