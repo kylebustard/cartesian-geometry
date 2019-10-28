@@ -1,10 +1,7 @@
-const {
-  POINT,
-  LINE,
-  TRIANGLE,
-  QUADRILATERAL
-} = require('./constants/polygonTypes');
+const { POINT } = require('./constants/polygonTypes');
+const makeLine = require('./line');
 const makeTriangle = require('./triangle');
+const makeQuadrilateral = require('./quadrilateral');
 
 function polygon(orderedPairSet) {
   switch (orderedPairSet.length) {
@@ -17,14 +14,6 @@ function polygon(orderedPairSet) {
     case 4:
       return makeQuadrilateral(orderedPairSet);
   }
-}
-
-function makeQuadrilateral(orderedPairSet) {
-  return { type: QUADRILATERAL, coordinates: orderedPairSet };
-}
-
-function makeLine(orderedPairSet) {
-  return { type: LINE, coordinates: orderedPairSet };
 }
 
 function makePoint(orderedPairSet) {
