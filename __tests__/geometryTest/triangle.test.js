@@ -10,8 +10,11 @@ const {
 
 describe('given a triangle that needs to be classified', () => {
   describe('when all sides and angles are equal', () => {
+    const equilateralTriangle1 = [[-4, 0], [4, 0], [0, 4 * Math.sqrt(3)]];
+    const equilateralTriangle2 = [[2, 4], [2, 6], [2 + Math.sqrt(3), 5]];
+
     it('is an equilateral', () => {
-      const result = makeTriangle([[0, 0], [2, 2], [4, 0]]);
+      const result = makeTriangle(equilateralTriangle2);
 
       expect(result).toMatchObject({ classification: EQUILATERAL });
     });
