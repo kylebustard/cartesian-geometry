@@ -16,9 +16,13 @@ function classifyTriangle(orderedPairSet) {
   const side2Dist = distanceBetweenTwoPoints(pointB)(pointC);
   const side3Dist = distanceBetweenTwoPoints(pointC)(pointA);
 
-  console.log('xxx – ', side1Dist, side2Dist, side3Dist);
+  const arr = [side1Dist, side2Dist, side3Dist];
 
-  return side1Dist === side2Dist;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] == arr[i + 1]) {
+      return ISOSCELES;
+    }
+  }
 }
 
 function areaOfTriangle(orderedPairSet) {
