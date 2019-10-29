@@ -18,10 +18,15 @@ function classifyTriangle(orderedPairSet) {
 
   const arr = [side1Dist, side2Dist, side3Dist];
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] == arr[i + 1]) {
+  const arr2 = [...new Set(arr)];
+
+  switch (arr2.length) {
+    case 1:
+      return EQUILATERAL;
+    case 2:
       return ISOSCELES;
-    }
+    default:
+      return null;
   }
 }
 
