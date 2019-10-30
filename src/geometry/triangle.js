@@ -19,6 +19,8 @@ function classifyTriangle(orderedPairSet) {
   const arr = [side1Dist, side2Dist, side3Dist];
 
   const arr2 = [...new Set(arr)];
+  console.log('arr - ', arr);
+  console.log('arr2 - ', arr2);
 
   switch (arr2.length) {
     case 1:
