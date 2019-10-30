@@ -27,6 +27,8 @@ function classifyTriangle(orderedPairSet) {
       return EQUILATERAL;
     case 2:
       return ISOSCELES;
+    case 3:
+      return SCALENE;
     default:
       return null;
   }

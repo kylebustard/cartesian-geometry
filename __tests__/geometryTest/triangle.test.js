@@ -32,14 +32,22 @@ describe('given a triangle that needs to be classified', () => {
     });
   });
 
-  describe('when ');
+  describe('when there are no congruent sides', () => {
+    const scaleneTriangle = [[0, 0], [2, 2], [0, 5]];
+
+    it('scalene', () => {
+      const result = makeTriangle(scaleneTriangle);
+
+      expect(result).toMatchObject({ classification: SCALENE });
+    });
+  });
 });
 
 /*
-Right	Features one 90° angle.
-X Equilateral	All sides & angles are congruent. (All angles are 60°.)
-Isosceles	Two equal sides & two equal angles.
-Scalene	No congruent sides. (Each side has a different length.)
+❌ Right	Features one 90° angle.
+❌ Equilateral	All sides & angles are congruent. (All angles are 60°.)
+✅Isosceles	Two equal sides & two equal angles.
+✅Scalene	No congruent sides. (Each side has a different length.)
 Acute	Features three acute angles. (An acute angle measures less than 90°.)
 Obtuse	Features one angle measuring larger than 90°.
 */
